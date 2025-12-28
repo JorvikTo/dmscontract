@@ -515,6 +515,7 @@
                 <button class="btn btn-info" onclick="addServiceLevel()">➕ 添加服务级别</button>
                 <button class="btn btn-secondary" onclick="exportExcel()">📊 导出Excel</button>
                 <button class="btn btn-warning" onclick="resetData()">🔄 重置</button>
+                <button class="btn" style="background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); color: white;" onclick="exportPlanOnly()">📄 输出方案明细</button>
                 <button class="btn btn-next" onclick="showTab('contract')">下一步：填写合同信息 →</button>
             </div>
         </div>
@@ -1348,6 +1349,136 @@
             link.href = URL.createObjectURL(blob);
             link.download = '软件使用许可合同.html';
             link.click();
+        }
+
+        // 输出方案明细
+        function exportPlanOnly() {
+            // 生成方案明细HTML
+            let planHTML = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云之印全流程计划书 - 方案配置</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; min-height: 100vh; color: #333; }
+        .header { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header p { font-size: 16px; opacity: 0.9; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+        .section { background: white; border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .section h2 { color: #2c3e7b; font-size: 22px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 12px 15px; text-align: center; border: 1px solid #e0e0e0; }
+        th { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; font-weight: 500; }
+        .feature-col { text-align: left; background: #f8f9fa; font-weight: 500; min-width: 280px; }
+        .category-row td { background: #e8ecf4; font-weight: bold; color: #2c3e7b; text-align: left; }
+        .price-row td { background: #fff8e6; color: #d35400; font-weight: bold; font-size: 18px; }
+        .check { color: #27ae60; font-size: 20px; }
+        .cross { color: #e74c3c; font-size: 20px; }
+        .service-table td { text-align: left; vertical-align: top; }
+        .service-table td:last-child { text-align: right; white-space: nowrap; font-weight: bold; color: #d35400; }
+        .service-table td:first-child { font-weight: bold; color: #2c3e7b; width: 150px; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 14px; }
+        .btn-group { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        .btn { padding: 12px 30px; border: none; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 500; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; }
+        @media print {
+            body { background: white; }
+            .header { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .section { box-shadow: none; break-inside: avoid; }
+            .btn-group, .footer { display: none; }
+            th { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>云之印全流程计划书</h1>
+        <p>OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细</p>
+    </div>
+    <div class="container">
+        <div class="section">
+            <h2>📋 功能模块配置对比</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="feature-col">功能</th>`;
+            
+            // 添加方案表头
+            plans.forEach(plan => {
+                planHTML += `<th style="min-width: 150px;"><span style="font-size: 16px; font-weight: bold;">${plan.name}</span><br><span style="font-size: 12px; opacity: 0.8;">(${plan.subtitle})</span></th>`;
+            });
+            planHTML += `</tr></thead><tbody>`;
+            
+            // 价格行
+            planHTML += `<tr class="price-row"><td class="feature-col" style="color: #d35400;">价格</td>`;
+            plans.forEach(plan => {
+                planHTML += `<td>${plan.price || '待定'}</td>`;
+            });
+            planHTML += `</tr>`;
+            
+            // 功能行
+            features.forEach(category => {
+                if (category.category) {
+                    planHTML += `<tr class="category-row"><td colspan="${plans.length + 1}">${category.category}</td></tr>`;
+                }
+                category.features.forEach(feature => {
+                    planHTML += `<tr><td class="feature-col">${feature.name}</td>`;
+                    plans.forEach((plan, index) => {
+                        const value = feature.values[index] || '';
+                        if (value === '✔') {
+                            planHTML += `<td class="check">✔</td>`;
+                        } else if (value === '✘') {
+                            planHTML += `<td class="cross">✘</td>`;
+                        } else {
+                            planHTML += `<td></td>`;
+                        }
+                    });
+                    planHTML += `</tr>`;
+                });
+            });
+            planHTML += `</tbody></table></div>`;
+            
+            // 服务级别说明
+            planHTML += `
+        <div class="section">
+            <h2>🛠️ 服务级别说明</h2>
+            <table class="service-table">
+                <thead>
+                    <tr>
+                        <th>服务级别</th>
+                        <th>服务内容</th>
+                        <th>价格</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            services.forEach(service => {
+                planHTML += `<tr>
+                    <td>${service.level}</td>
+                    <td style="white-space: pre-line;">${service.content}</td>
+                    <td>${service.price}</td>
+                </tr>`;
+            });
+            
+            planHTML += `</tbody></table></div>
+        <div class="btn-group">
+            <button class="btn" onclick="window.print()">🖨️ 打印方案</button>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Deep Mind Solutions 广州多普网络科技有限公司</p>
+        <p>联系邮箱：info@deepmind.cn</p>
+    </div>
+</body>
+</html>`;
+            
+            // 打开新窗口显示方案明细
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(planHTML);
+            newWindow.document.close();
         }
 
         // 初始化
