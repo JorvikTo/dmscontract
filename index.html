@@ -12,23 +12,36 @@
         }
         body {
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
             min-height: 100vh;
             color: #333;
         }
         .header {
-            background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%);
+            background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%);
             color: white;
-            padding: 30px 20px;
-            text-align: center;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+        }
+        .header-logo {
+            height: 70px;
+            width: auto;
+        }
+        .header-text {
+            text-align: left;
         }
         .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 6px;
+            font-weight: 400;
+            letter-spacing: 1px;
         }
         .header p {
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 12px;
+            opacity: 0.75;
+            font-weight: 300;
         }
         .container {
             max-width: 1400px;
@@ -52,10 +65,10 @@
         }
         .tab.active {
             background: white;
-            color: #2c3e7b;
+            color: #333;
         }
         .tab:hover:not(.active) {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
         }
         .panel {
             display: none;
@@ -68,14 +81,14 @@
             display: block;
         }
         .instructions {
-            background: #f8f9fa;
+            background: #f5f5f5;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #2c3e7b;
+            border-left: 4px solid #555;
         }
         .instructions h3 {
-            color: #2c3e7b;
+            color: #333;
             margin-bottom: 10px;
         }
         .instructions ul {
@@ -101,7 +114,7 @@
             border: 1px solid #e0e0e0;
         }
         th {
-            background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%);
+            background: linear-gradient(135deg, #4a4a4a 0%, #333 100%);
             color: white;
             font-weight: 500;
         }
@@ -112,9 +125,9 @@
             min-width: 300px;
         }
         .category-row td {
-            background: #e8ecf4;
+            background: #e5e5e5;
             font-weight: bold;
-            color: #2c3e7b;
+            color: #333;
             text-align: left;
         }
         .price-row td {
@@ -143,7 +156,7 @@
             display: inline-block;
         }
         .editable:hover {
-            background: rgba(44, 62, 123, 0.1);
+            background: rgba(0, 0, 0, 0.08);
             border-radius: 4px;
         }
         .plan-header {
@@ -189,7 +202,7 @@
             margin-top: 30px;
         }
         .service-table h3 {
-            color: #2c3e7b;
+            color: #333;
             margin-bottom: 15px;
         }
         .service-table td {
@@ -222,7 +235,7 @@
             min-height: 20px;
         }
         .editable-cell:hover {
-            background: rgba(44, 62, 123, 0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
         /* 按钮样式 */
         .btn-group {
@@ -245,56 +258,56 @@
             gap: 8px;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            background: linear-gradient(135deg, #555 0%, #333 100%);
             color: white;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
         .btn-secondary {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #666 0%, #444 100%);
             color: white;
         }
         .btn-secondary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
         .btn-warning {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            background: linear-gradient(135deg, #888 0%, #666 100%);
             color: white;
         }
         .btn-warning:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
         .btn-info {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            background: linear-gradient(135deg, #777 0%, #555 100%);
             color: white;
         }
         .btn-info:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
         .btn-next {
-            background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%);
+            background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
             color: white;
             padding: 15px 50px;
             font-size: 16px;
         }
         .btn-next:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(44, 62, 123, 0.4);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
         /* 合同信息表单 */
         .form-section {
             margin-bottom: 30px;
         }
         .form-section h3 {
-            color: #2c3e7b;
+            color: #333;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 2px solid #ddd;
         }
         .form-grid {
             display: grid;
@@ -320,7 +333,7 @@
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
-            border-color: #2c3e7b;
+            border-color: #555;
         }
         .form-group textarea {
             min-height: 80px;
@@ -344,16 +357,16 @@
             text-align: center;
         }
         .plan-card:hover {
-            border-color: #2c3e7b;
+            border-color: #555;
             transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
         .plan-card.selected {
-            border-color: #27ae60;
-            background: #f0fff4;
+            border-color: #333;
+            background: #f5f5f5;
         }
         .plan-card h4 {
-            color: #2c3e7b;
+            color: #333;
             margin-bottom: 5px;
         }
         .plan-card .price {
@@ -379,7 +392,7 @@
         .contract-preview h2 {
             font-size: 16px;
             margin: 20px 0 10px;
-            color: #2c3e7b;
+            color: #333;
         }
         .contract-preview .contract-header {
             text-align: right;
@@ -406,7 +419,7 @@
             font-size: 12px;
         }
         .contract-preview th {
-            background: #2c3e7b;
+            background: #4a4a4a;
         }
         .contract-preview .footer-info {
             text-align: center;
@@ -422,7 +435,7 @@
         }
         .contract-preview .article-title {
             font-weight: bold;
-            color: #2c3e7b;
+            color: #333;
         }
         .contract-preview .sub-item {
             margin-left: 20px;
@@ -430,7 +443,7 @@
         .contract-preview .appendix {
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 2px solid #2c3e7b;
+            border-top: 2px solid #555;
         }
         .contract-preview .appendix h2 {
             font-size: 18px;
@@ -456,8 +469,11 @@
 </head>
 <body>
     <div class="header">
-        <h1>印刷全流程计划书与合同生成系统</h1>
-        <p>以下为方案明细，列明建议的标准配置模块及可选模块</p>
+        <img src="logo.png" alt="DMS Logo" class="header-logo">
+        <div class="header-text">
+            <h1>印刷全流程计划书与合同生成系统</h1>
+            <p>以下为方案明细，列明建议的标准配置模块及可选模块</p>
+        </div>
     </div>
 
     <div class="container">
@@ -515,7 +531,7 @@
                 <button class="btn btn-info" onclick="addServiceLevel()">➕ 添加服务级别</button>
                 <button class="btn btn-secondary" onclick="exportExcel()">📊 导出Excel</button>
                 <button class="btn btn-warning" onclick="resetData()">🔄 重置</button>
-                <button class="btn" style="background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); color: white;" onclick="exportPlanOnly()">📄 输出方案明细</button>
+                <button class="btn" style="background: linear-gradient(135deg, #555 0%, #333 100%); color: white;" onclick="exportPlanOnly()">📄 输出方案明细</button>
                 <button class="btn btn-next" onclick="showTab('contract')">下一步：填写合同信息 →</button>
             </div>
         </div>
@@ -1363,33 +1379,35 @@
     <title>云之印全流程计划书 - 方案配置</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; color: #333; height: auto; min-height: auto; }
-        .header { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; padding: 20px 15px; text-align: center; }
-        .header h1 { font-size: 24px; margin-bottom: 5px; }
-        .header p { font-size: 12px; opacity: 0.9; }
+        html, body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f5f5; color: #333; height: auto; min-height: auto; }
+        .header { background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%); color: white; padding: 15px 20px; display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .header-logo { height: 50px; width: auto; }
+        .header-text { text-align: left; }
+        .header h1 { font-size: 20px; margin-bottom: 4px; font-weight: 400; }
+        .header p { font-size: 11px; opacity: 0.8; }
         .container { max-width: 100%; margin: 0 auto; padding: 15px; }
         .section { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-        .section h2 { color: #2c3e7b; font-size: 16px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0; }
+        .section h2 { color: #333; font-size: 16px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #ddd; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th, td { padding: 6px 8px; text-align: center; border: 1px solid #e0e0e0; }
-        th { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; font-weight: 500; font-size: 10px; }
-        .feature-col { text-align: left; background: #f8f9fa; font-weight: 500; min-width: 180px; font-size: 11px; }
-        .category-row td { background: #e8ecf4; font-weight: bold; color: #2c3e7b; text-align: left; font-size: 11px; }
-        .price-row td { background: #fff8e6; color: #d35400; font-weight: bold; font-size: 12px; }
-        .check { color: #27ae60; font-size: 14px; }
-        .cross { color: #e74c3c; font-size: 14px; }
+        th, td { padding: 6px 8px; text-align: center; border: 1px solid #ddd; }
+        th { background: linear-gradient(135deg, #4a4a4a 0%, #333 100%); color: white; font-weight: 500; font-size: 10px; }
+        .feature-col { text-align: left; background: #f8f8f8; font-weight: 500; min-width: 180px; font-size: 11px; }
+        .category-row td { background: #e5e5e5; font-weight: bold; color: #333; text-align: left; font-size: 11px; }
+        .price-row td { background: #f5f5f5; color: #333; font-weight: bold; font-size: 12px; }
+        .check { color: #333; font-size: 14px; }
+        .cross { color: #999; font-size: 14px; }
         .service-table td { text-align: left; vertical-align: top; font-size: 11px; }
-        .service-table td:last-child { text-align: right; white-space: nowrap; font-weight: bold; color: #d35400; }
-        .service-table td:first-child { font-weight: bold; color: #2c3e7b; width: 100px; }
+        .service-table td:last-child { text-align: right; white-space: nowrap; font-weight: bold; color: #333; }
+        .service-table td:first-child { font-weight: bold; color: #333; width: 100px; }
         .footer { text-align: center; padding: 10px; color: #666; font-size: 10px; }
         .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; }
+        .btn { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; background: linear-gradient(135deg, #555 0%, #333 100%); color: white; }
         @media print {
             @page { size: A4; margin: 10mm; }
             html, body { background: white !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
-            .header { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 15px 10px; }
-            .header h1 { font-size: 20px; }
-            .header p { font-size: 10px; }
+            .header { background: #4a4a4a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 12px 15px; }
+            .header h1 { font-size: 18px; }
+            .header p { font-size: 9px; }
             .container { padding: 10px; }
             .section { box-shadow: none; padding: 10px; margin-bottom: 10px; page-break-inside: auto; }
             .section h2 { font-size: 14px; margin-bottom: 8px; }
@@ -1397,12 +1415,12 @@
             tr { page-break-inside: avoid; page-break-after: auto; }
             thead { display: table-header-group; }
             th, td { padding: 4px 6px; }
-            th { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 9px; }
+            th { background: #4a4a4a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 9px; }
             .feature-col { min-width: 150px; font-size: 9px; }
-            .category-row td { font-size: 9px; background: #e8ecf4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .price-row td { font-size: 10px; background: #fff8e6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .check { font-size: 12px; color: #27ae60 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .cross { font-size: 12px; color: #e74c3c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .category-row td { font-size: 9px; background: #e5e5e5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .price-row td { font-size: 10px; background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .check { font-size: 12px; color: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .cross { font-size: 12px; color: #999 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .service-table td { font-size: 9px; }
             .btn-group { display: none !important; }
             .footer { display: none !important; }
@@ -1411,8 +1429,11 @@
 </head>
 <body>
     <div class="header">
-        <h1>云之印全流程计划书</h1>
-        <p>OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细</p>
+        <img src="logo.png" alt="DMS Logo" class="header-logo">
+        <div class="header-text">
+            <h1>云之印全流程计划书</h1>
+            <p>OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细</p>
+        </div>
     </div>
     <div class="container">
         <div class="section">
