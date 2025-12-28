@@ -48,6 +48,62 @@
             margin: 0 auto;
             padding: 20px;
         }
+        .customer-bar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+        }
+        .customer-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .customer-selector label {
+            font-weight: 500;
+            color: #333;
+        }
+        .customer-selector select {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 180px;
+            background: white;
+        }
+        .customer-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .customer-btn.add {
+            background: #27ae60;
+            color: white;
+        }
+        .customer-btn.add:hover {
+            background: #219a52;
+        }
+        .customer-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+        .customer-btn.delete:hover {
+            background: #c0392b;
+        }
+        .customer-btn.save {
+            background: #3498db;
+            color: white;
+        }
+        .customer-btn.save:hover {
+            background: #2980b9;
+        }
         .tabs {
             display: flex;
             gap: 10px;
@@ -482,6 +538,19 @@
         </div>
     </div>
 
+    <!-- 客户管理栏 -->
+    <div class="customer-bar">
+        <div class="customer-selector">
+            <label>当前客户：</label>
+            <select id="customerSelect" onchange="switchCustomer()">
+                <option value="default">默认客户</option>
+            </select>
+            <button class="customer-btn add" onclick="addCustomer()">➕ 新增客户</button>
+            <button class="customer-btn delete" onclick="deleteCustomer()">➖ 删除客户</button>
+            <button class="customer-btn save" onclick="saveCurrentCustomer()">✔ 保存当前方案</button>
+        </div>
+    </div>
+
     <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="showTab('plan')">方案配置</button>
@@ -641,14 +710,17 @@
     </div>
 
     <script>
-        // 默认数据
-        const defaultPlans = [
+        // 默认数据函数
+        function getDefaultPlans() {
+            return [
             { name: '方案一', subtitle: '自定义', price: '' },
             { name: '方案二', subtitle: '经济型', price: '15万' },
             { name: '方案三', subtitle: '全套', price: '49万' }
         ];
+        }
 
-        const defaultFeatures = [
+        function getDefaultFeatures() {
+            return [
             { category: '商务系统', features: [] },
             { category: '', features: [
                 { name: '私有化软件部署', values: ['', '✔', '✔'] },
@@ -724,8 +796,10 @@
                 { name: '年度服务费', values: ['', '✔', '✔'] }
             ]}
         ];
+        }
 
-        const defaultServices = [
+        function getDefaultServices() {
+            return [
             {
                 level: '所有级别共用',
                 content: '1. 软件Bug修正\n2. 软件升级\n3. 听取客户修改及升级意见\n4. 如合同模块有相应约定，上了某些模块后必须购买2级别以上服务\n5. 若客户购买了1级别服务，想定制其他功能，甲乙双方可商讨费用',
@@ -742,6 +816,7 @@
                 price: '双方商讨'
             }
         ];
+        }
 
         // 数据存储
         let plans = [];
@@ -781,12 +856,158 @@
             }
         }
 
-        // 初始化
-        function init() {
-            loadData();
-            loadTitles();
+        // 客户管理相关变量
+        let currentCustomerId = 'default';
+        let customers = {};
+
+        // 加载客户列表
+        function loadCustomers() {
+            const savedCustomers = localStorage.getItem('dms_customers');
+            if (savedCustomers) {
+                customers = JSON.parse(savedCustomers);
+            } else {
+                customers = {
+                    'default': {
+                        name: '默认客户',
+                        title: '印刷全流程计划书与合同生成系统',
+                        subtitle: '以下为方案明细，列明建议的标准配置模块及可选模块'
+                    }
+                };
+            }
+            currentCustomerId = localStorage.getItem('dms_currentCustomer') || 'default';
+            renderCustomerSelect();
+        }
+
+        // 渲染客户下拉列表
+        function renderCustomerSelect() {
+            const select = document.getElementById('customerSelect');
+            select.innerHTML = '';
+            for (const id in customers) {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = customers[id].name;
+                if (id === currentCustomerId) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            }
+        }
+
+        // 保存客户列表
+        function saveCustomers() {
+            localStorage.setItem('dms_customers', JSON.stringify(customers));
+            localStorage.setItem('dms_currentCustomer', currentCustomerId);
+        }
+
+        // 新增客户
+        function addCustomer() {
+            const name = prompt('请输入客户名称（如：齐齐哈尔云之印）：');
+            if (name && name.trim()) {
+                const id = 'customer_' + Date.now();
+                const title = prompt('请输入计划书标题（如：XX公司全流程计划书）：', name.trim() + '全流程计划书');
+                customers[id] = {
+                    name: name.trim(),
+                    title: title || name.trim() + '全流程计划书',
+                    subtitle: 'OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细'
+                };
+                currentCustomerId = id;
+                saveCustomers();
+                renderCustomerSelect();
+                // 加载默认数据作为新客户的初始数据
+                loadDefaultData();
+                updateTitleDisplay();
+                alert('客户 "' + name.trim() + '" 已添加！');
+            }
+        }
+
+        // 删除客户
+        function deleteCustomer() {
+            if (currentCustomerId === 'default') {
+                alert('默认客户不能删除！');
+                return;
+            }
+            const customerName = customers[currentCustomerId].name;
+            if (confirm('确定要删除客户 "' + customerName + '" 吗？\n该客户的所有方案数据将被删除！')) {
+                // 删除客户数据
+                localStorage.removeItem('dms_plans_' + currentCustomerId);
+                localStorage.removeItem('dms_features_' + currentCustomerId);
+                localStorage.removeItem('dms_services_' + currentCustomerId);
+                delete customers[currentCustomerId];
+                currentCustomerId = 'default';
+                saveCustomers();
+                renderCustomerSelect();
+                loadCustomerData();
+                updateTitleDisplay();
+                alert('客户已删除！');
+            }
+        }
+
+        // 切换客户
+        function switchCustomer() {
+            const select = document.getElementById('customerSelect');
+            currentCustomerId = select.value;
+            saveCustomers();
+            loadCustomerData();
+            updateTitleDisplay();
+        }
+
+        // 保存当前客户的方案
+        function saveCurrentCustomer() {
+            const key_plans = 'dms_plans_' + currentCustomerId;
+            const key_features = 'dms_features_' + currentCustomerId;
+            const key_services = 'dms_services_' + currentCustomerId;
+            localStorage.setItem(key_plans, JSON.stringify(plans));
+            localStorage.setItem(key_features, JSON.stringify(features));
+            localStorage.setItem(key_services, JSON.stringify(services));
+            // 保存标题
+            customers[currentCustomerId].title = document.getElementById('mainTitle').textContent;
+            customers[currentCustomerId].subtitle = document.getElementById('mainSubtitle').textContent;
+            saveCustomers();
+            alert('客户 "' + customers[currentCustomerId].name + '" 的方案已保存！');
+        }
+
+        // 加载客户数据
+        function loadCustomerData() {
+            const key_plans = 'dms_plans_' + currentCustomerId;
+            const key_features = 'dms_features_' + currentCustomerId;
+            const key_services = 'dms_services_' + currentCustomerId;
+            
+            const savedPlans = localStorage.getItem(key_plans);
+            const savedFeatures = localStorage.getItem(key_features);
+            const savedServices = localStorage.getItem(key_services);
+            
+            if (savedPlans && savedFeatures) {
+                plans = JSON.parse(savedPlans);
+                features = JSON.parse(savedFeatures);
+                services = savedServices ? JSON.parse(savedServices) : getDefaultServices();
+            } else {
+                loadDefaultData();
+            }
             renderPlanTable();
             renderServiceTable();
+        }
+
+        // 更新标题显示
+        function updateTitleDisplay() {
+            const customer = customers[currentCustomerId];
+            if (customer) {
+                document.getElementById('mainTitle').textContent = customer.title;
+                document.getElementById('mainSubtitle').textContent = customer.subtitle;
+            }
+        }
+
+        // 加载默认数据
+        function loadDefaultData() {
+            plans = JSON.parse(JSON.stringify(getDefaultPlans()));
+            features = JSON.parse(JSON.stringify(getDefaultFeatures()));
+            services = JSON.parse(JSON.stringify(getDefaultServices()));
+        }
+
+        // 初始化
+        function init() {
+            loadCustomers();
+            loadCustomerData();
+            updateTitleDisplay();
         }
 
         // 加载数据
@@ -795,9 +1016,9 @@
             const savedFeatures = localStorage.getItem('dms_features');
             const savedServices = localStorage.getItem('dms_services');
 
-            plans = savedPlans ? JSON.parse(savedPlans) : JSON.parse(JSON.stringify(defaultPlans));
-            features = savedFeatures ? JSON.parse(savedFeatures) : JSON.parse(JSON.stringify(defaultFeatures));
-            services = savedServices ? JSON.parse(savedServices) : JSON.parse(JSON.stringify(defaultServices));
+            plans = savedPlans ? JSON.parse(savedPlans) : JSON.parse(JSON.stringify(getDefaultPlans()));
+            features = savedFeatures ? JSON.parse(savedFeatures) : JSON.parse(JSON.stringify(getDefaultFeatures()));
+            services = savedServices ? JSON.parse(savedServices) : JSON.parse(JSON.stringify(getDefaultServices()));
         }
 
         // 保存数据
@@ -1366,13 +1587,13 @@
 
         // 重置数据
         function resetData() {
-            if (confirm('确定要重置所有数据吗？此操作不可恢复！')) {
-                localStorage.removeItem('dms_plans');
-                localStorage.removeItem('dms_features');
-                localStorage.removeItem('dms_services');
-                plans = JSON.parse(JSON.stringify(defaultPlans));
-                features = JSON.parse(JSON.stringify(defaultFeatures));
-                services = JSON.parse(JSON.stringify(defaultServices));
+            if (confirm('确定要重置当前客户的所有数据吗？此操作不可恢复！')) {
+                localStorage.removeItem('dms_plans_' + currentCustomerId);
+                localStorage.removeItem('dms_features_' + currentCustomerId);
+                localStorage.removeItem('dms_services_' + currentCustomerId);
+                plans = JSON.parse(JSON.stringify(getDefaultPlans()));
+                features = JSON.parse(JSON.stringify(getDefaultFeatures()));
+                services = JSON.parse(JSON.stringify(getDefaultServices()));
                 renderPlanTable();
                 renderServiceTable();
             }
