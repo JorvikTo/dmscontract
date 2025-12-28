@@ -150,6 +150,12 @@
             color: #ccc;
             cursor: pointer;
         }
+        .price-value {
+            color: #d35400;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
         .editable {
             cursor: text;
             min-width: 50px;
@@ -814,6 +820,10 @@
                         } else if (value === '✘') {
                             displayValue = '✘';
                             className = 'cross';
+                        } else if (value && value !== '') {
+                            // 显示价格
+                            displayValue = value;
+                            className = 'price-value';
                         }
                         row += `<td><span class="${className}" onclick="toggleValue(${catIndex}, ${featIndex}, ${planIndex})">${displayValue || '○'}</span></td>`;
                     });
@@ -847,7 +857,16 @@
                 newValue = '✔';
             } else if (currentValue === '✔') {
                 newValue = '✘';
+            } else if (currentValue === '✘') {
+                // 切换到填写价格状态
+                const price = prompt('请输入价格（如：5000元、1万）：', '');
+                if (price !== null && price.trim()) {
+                    newValue = price.trim();
+                } else {
+                    newValue = '';
+                }
             } else {
+                // 当前是价格，切换回空白
                 newValue = '';
             }
             features[catIndex].features[featIndex].values[planIndex] = newValue;
@@ -1469,6 +1488,8 @@
                             planHTML += `<td class="check">✔</td>`;
                         } else if (value === '✘') {
                             planHTML += `<td class="cross">✘</td>`;
+                        } else if (value && value !== '') {
+                            planHTML += `<td style="color: #d35400; font-weight: bold;">${value}</td>`;
                         } else {
                             planHTML += `<td></td>`;
                         }
