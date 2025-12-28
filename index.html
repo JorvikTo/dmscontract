@@ -179,6 +179,11 @@
             background: #f8f9fa;
             font-weight: 500;
             min-width: 300px;
+            width: 40%;
+        }
+        .plan-col {
+            width: 20%;
+            min-width: 150px;
         }
         .category-row td {
             background: linear-gradient(135deg, #e8f6f3 0%, #d5f5e3 100%);
@@ -905,6 +910,21 @@
             if (name && name.trim()) {
                 const id = 'customer_' + Date.now();
                 const title = prompt('请输入计划书标题（如：XX公司全流程计划书）：', name.trim() + '全流程计划书');
+                
+                // 询问是否从现有客户复制方案
+                let copyFromId = null;
+                const customerList = Object.keys(customers).filter(cid => cid !== id);
+                if (customerList.length > 0) {
+                    let copyOptions = '请选择是否从现有客户复制方案：\n\n0 - 使用默认方案（不复制）\n';
+                    customerList.forEach((cid, idx) => {
+                        copyOptions += (idx + 1) + ' - 复制自「' + customers[cid].name + '」\n';
+                    });
+                    const choice = prompt(copyOptions + '\n请输入数字：', '0');
+                    if (choice && parseInt(choice) > 0 && parseInt(choice) <= customerList.length) {
+                        copyFromId = customerList[parseInt(choice) - 1];
+                    }
+                }
+                
                 customers[id] = {
                     name: name.trim(),
                     title: title || name.trim() + '全流程计划书',
@@ -913,11 +933,44 @@
                 currentCustomerId = id;
                 saveCustomers();
                 renderCustomerSelect();
-                // 加载默认数据作为新客户的初始数据
-                loadDefaultData();
+                
+                // 加载数据：复制现有客户或使用默认
+                if (copyFromId) {
+                    copyDataFromCustomer(copyFromId);
+                    alert('客户 "' + name.trim() + '" 已添加，并已复制「' + customers[copyFromId].name + '」的方案！');
+                } else {
+                    loadDefaultData();
+                    alert('客户 "' + name.trim() + '" 已添加！');
+                }
                 updateTitleDisplay();
-                alert('客户 "' + name.trim() + '" 已添加！');
             }
+        }
+        
+        // 从现有客户复制数据
+        function copyDataFromCustomer(sourceId) {
+            const sourcePlans = localStorage.getItem('dms_plans_' + sourceId);
+            const sourceFeatures = localStorage.getItem('dms_features_' + sourceId);
+            const sourceServices = localStorage.getItem('dms_services_' + sourceId);
+            
+            if (sourcePlans) {
+                plans = JSON.parse(sourcePlans);
+            } else {
+                plans = JSON.parse(JSON.stringify(getDefaultPlans()));
+            }
+            if (sourceFeatures) {
+                features = JSON.parse(sourceFeatures);
+            } else {
+                features = JSON.parse(JSON.stringify(getDefaultFeatures()));
+            }
+            if (sourceServices) {
+                services = JSON.parse(sourceServices);
+            } else {
+                services = JSON.parse(JSON.stringify(getDefaultServices()));
+            }
+            
+            saveData();
+            renderPlanTable();
+            renderServiceTable();
         }
 
         // 删除客户
@@ -1037,7 +1090,7 @@
             headerRow.innerHTML = '<th class="feature-col">功能</th>';
             plans.forEach((plan, index) => {
                 headerRow.innerHTML += `
-                    <th class="plan-header" style="min-width: 150px;">
+                    <th class="plan-header plan-col">
                         <span class="plan-name" onclick="editPlanName(${index})">${plan.name}</span>
                         <br>
                         <span class="plan-subtitle" onclick="editPlanSubtitle(${index})">(${plan.subtitle})</span>
