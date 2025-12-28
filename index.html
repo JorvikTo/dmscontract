@@ -1806,7 +1806,7 @@
     <div class="header">
         <img src="logo.png" alt="DMS Logo" class="header-logo">
         <div class="header-text">
-            <h1>${localStorage.getItem('mainTitle') || '印刷全流程计划书'}</h1>
+            <h1>${customers[currentCustomerIndex]?.name ? customers[currentCustomerIndex].name + ' - ' : ''}${localStorage.getItem('mainTitle') || '印刷全流程计划书'}</h1>
             <p>${localStorage.getItem('mainSubtitle') || 'OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细'}</p>
         </div>
     </div>
