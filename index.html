@@ -255,7 +255,7 @@
             height: 20px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
             display: none;
         }
         .plan-header:hover .delete-plan {
@@ -263,6 +263,36 @@
         }
         .delete-plan:hover {
             background: #e74c3c;
+        }
+        .delete-plan-top {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            background: rgba(231, 76, 60, 0.8);
+            border: none;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 18px;
+            text-align: center;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .delete-plan-top:hover {
+            opacity: 1;
+            background: #c0392b;
+        }
+        .remark-row td {
+            background: #f5f5f5;
+            font-size: 12px;
+            color: #666;
+        }
+        .remark-text {
+            font-style: italic;
+            color: #888;
         }
         /* 服务级别表格 */
         .service-table {
@@ -718,9 +748,9 @@
         // 默认数据函数
         function getDefaultPlans() {
             return [
-            { name: '方案一', subtitle: '自定义', price: '' },
-            { name: '方案二', subtitle: '经济型', price: '15万' },
-            { name: '方案三', subtitle: '全套', price: '49万' }
+            { name: '方案一', subtitle: '自定义', price: '', remark: '' },
+            { name: '方案二', subtitle: '经济型', price: '15万', remark: '' },
+            { name: '方案三', subtitle: '全套', price: '49万', remark: '' }
         ];
         }
 
@@ -1091,10 +1121,10 @@
             plans.forEach((plan, index) => {
                 headerRow.innerHTML += `
                     <th class="plan-header plan-col">
+                        <button class="delete-plan-top" onclick="deletePlan(${index})" title="删除此方案">×</button>
                         <span class="plan-name" onclick="editPlanName(${index})">${plan.name}</span>
                         <br>
                         <span class="plan-subtitle" onclick="editPlanSubtitle(${index})">(${plan.subtitle})</span>
-                        <button class="delete-plan" onclick="deletePlan(${index})">×</button>
                     </th>
                 `;
             });
@@ -1109,6 +1139,14 @@
             });
             priceRow += '</tr>';
             tbody.innerHTML += priceRow;
+            
+            // 备注行
+            let remarkRow = '<tr class="remark-row"><td class="feature-col" style="color: #666;">备注</td>';
+            plans.forEach((plan, index) => {
+                remarkRow += `<td><span class="editable remark-text" onclick="editRemark(${index})">${plan.remark || '点击添加备注'}</span></td>`;
+            });
+            remarkRow += '</tr>';
+            tbody.innerHTML += remarkRow;
 
             // 功能行
             features.forEach((category, catIndex) => {
@@ -1210,13 +1248,24 @@
                 renderPlanTable();
             }
         }
+        
+        // 编辑备注
+        function editRemark(index) {
+            const newRemark = prompt('请输入方案备注（描述此方案的特点）：', plans[index].remark || '');
+            if (newRemark !== null) {
+                plans[index].remark = newRemark.trim();
+                saveData();
+                renderPlanTable();
+            }
+        }
 
         // 添加方案
         function addPlan() {
             const newPlan = {
                 name: `方案${plans.length + 1}`,
                 subtitle: '自定义',
-                price: ''
+                price: '',
+                remark: ''
             };
             plans.push(newPlan);
 
@@ -1779,6 +1828,13 @@
             planHTML += `<tr class="price-row"><td class="feature-col" style="color: #d35400;">价格</td>`;
             plans.forEach(plan => {
                 planHTML += `<td>${plan.price || '待定'}</td>`;
+            });
+            planHTML += `</tr>`;
+            
+            // 备注行
+            planHTML += `<tr class="remark-row"><td class="feature-col" style="color: #666;">备注</td>`;
+            plans.forEach(plan => {
+                planHTML += `<td style="font-style: italic; color: #888;">${plan.remark || '-'}</td>`;
             });
             planHTML += `</tr>`;
             
