@@ -1363,33 +1363,49 @@
     <title>云之印全流程计划书 - 方案配置</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; min-height: 100vh; color: #333; }
-        .header { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 32px; margin-bottom: 10px; }
-        .header p { font-size: 16px; opacity: 0.9; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
-        .section { background: white; border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .section h2 { color: #2c3e7b; font-size: 22px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th, td { padding: 12px 15px; text-align: center; border: 1px solid #e0e0e0; }
-        th { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; font-weight: 500; }
-        .feature-col { text-align: left; background: #f8f9fa; font-weight: 500; min-width: 280px; }
-        .category-row td { background: #e8ecf4; font-weight: bold; color: #2c3e7b; text-align: left; }
-        .price-row td { background: #fff8e6; color: #d35400; font-weight: bold; font-size: 18px; }
-        .check { color: #27ae60; font-size: 20px; }
-        .cross { color: #e74c3c; font-size: 20px; }
-        .service-table td { text-align: left; vertical-align: top; }
+        html, body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; color: #333; height: auto; min-height: auto; }
+        .header { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; padding: 20px 15px; text-align: center; }
+        .header h1 { font-size: 24px; margin-bottom: 5px; }
+        .header p { font-size: 12px; opacity: 0.9; }
+        .container { max-width: 100%; margin: 0 auto; padding: 15px; }
+        .section { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .section h2 { color: #2c3e7b; font-size: 16px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #e0e0e0; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th, td { padding: 6px 8px; text-align: center; border: 1px solid #e0e0e0; }
+        th { background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%); color: white; font-weight: 500; font-size: 10px; }
+        .feature-col { text-align: left; background: #f8f9fa; font-weight: 500; min-width: 180px; font-size: 11px; }
+        .category-row td { background: #e8ecf4; font-weight: bold; color: #2c3e7b; text-align: left; font-size: 11px; }
+        .price-row td { background: #fff8e6; color: #d35400; font-weight: bold; font-size: 12px; }
+        .check { color: #27ae60; font-size: 14px; }
+        .cross { color: #e74c3c; font-size: 14px; }
+        .service-table td { text-align: left; vertical-align: top; font-size: 11px; }
         .service-table td:last-child { text-align: right; white-space: nowrap; font-weight: bold; color: #d35400; }
-        .service-table td:first-child { font-weight: bold; color: #2c3e7b; width: 150px; }
-        .footer { text-align: center; padding: 30px; color: #666; font-size: 14px; }
-        .btn-group { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 12px 30px; border: none; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 500; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; }
+        .service-table td:first-child { font-weight: bold; color: #2c3e7b; width: 100px; }
+        .footer { text-align: center; padding: 10px; color: #666; font-size: 10px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
+        .btn { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; }
         @media print {
-            body { background: white; }
-            .header { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .section { box-shadow: none; break-inside: avoid; }
-            .btn-group, .footer { display: none; }
-            th { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            @page { size: A4; margin: 10mm; }
+            html, body { background: white !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
+            .header { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 15px 10px; }
+            .header h1 { font-size: 20px; }
+            .header p { font-size: 10px; }
+            .container { padding: 10px; }
+            .section { box-shadow: none; padding: 10px; margin-bottom: 10px; page-break-inside: auto; }
+            .section h2 { font-size: 14px; margin-bottom: 8px; }
+            table { font-size: 9px; page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            thead { display: table-header-group; }
+            th, td { padding: 4px 6px; }
+            th { background: #2c3e7b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 9px; }
+            .feature-col { min-width: 150px; font-size: 9px; }
+            .category-row td { font-size: 9px; background: #e8ecf4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .price-row td { font-size: 10px; background: #fff8e6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .check { font-size: 12px; color: #27ae60 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .cross { font-size: 12px; color: #e74c3c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .service-table td { font-size: 9px; }
+            .btn-group { display: none !important; }
+            .footer { display: none !important; }
         }
     </style>
 </head>
