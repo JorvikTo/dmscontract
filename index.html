@@ -477,8 +477,8 @@
     <div class="header">
         <img src="logo.png" alt="DMS Logo" class="header-logo">
         <div class="header-text">
-            <h1>印刷全流程计划书与合同生成系统</h1>
-            <p>以下为方案明细，列明建议的标准配置模块及可选模块</p>
+            <h1 id="mainTitle" onclick="editMainTitle()" style="cursor: pointer;" title="点击修改标题">印刷全流程计划书与合同生成系统</h1>
+            <p id="mainSubtitle" onclick="editMainSubtitle()" style="cursor: pointer;" title="点击修改副标题">以下为方案明细，列明建议的标准配置模块及可选模块</p>
         </div>
     </div>
 
@@ -749,9 +749,42 @@
         let services = [];
         let selectedPlanIndex = -1;
 
+        // 编辑主标题
+        function editMainTitle() {
+            const currentTitle = localStorage.getItem('mainTitle') || '印刷全流程计划书与合同生成系统';
+            const newTitle = prompt('请输入计划书标题（如：XX公司全流程计划书）：', currentTitle);
+            if (newTitle !== null && newTitle.trim()) {
+                localStorage.setItem('mainTitle', newTitle.trim());
+                document.getElementById('mainTitle').textContent = newTitle.trim();
+            }
+        }
+
+        // 编辑副标题
+        function editMainSubtitle() {
+            const currentSubtitle = localStorage.getItem('mainSubtitle') || '以下为方案明细，列明建议的标准配置模块及可选模块';
+            const newSubtitle = prompt('请输入副标题：', currentSubtitle);
+            if (newSubtitle !== null && newSubtitle.trim()) {
+                localStorage.setItem('mainSubtitle', newSubtitle.trim());
+                document.getElementById('mainSubtitle').textContent = newSubtitle.trim();
+            }
+        }
+
+        // 加载标题
+        function loadTitles() {
+            const savedTitle = localStorage.getItem('mainTitle');
+            const savedSubtitle = localStorage.getItem('mainSubtitle');
+            if (savedTitle) {
+                document.getElementById('mainTitle').textContent = savedTitle;
+            }
+            if (savedSubtitle) {
+                document.getElementById('mainSubtitle').textContent = savedSubtitle;
+            }
+        }
+
         // 初始化
         function init() {
             loadData();
+            loadTitles();
             renderPlanTable();
             renderServiceTable();
         }
@@ -1395,7 +1428,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>云之印全流程计划书 - 方案配置</title>
+    <title>${localStorage.getItem('mainTitle') || '印刷全流程计划书'} - 方案配置</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; color: #333; height: auto; min-height: auto; }
@@ -1450,8 +1483,8 @@
     <div class="header">
         <img src="logo.png" alt="DMS Logo" class="header-logo">
         <div class="header-text">
-            <h1>云之印全流程计划书</h1>
-            <p>OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细</p>
+            <h1>${localStorage.getItem('mainTitle') || '印刷全流程计划书'}</h1>
+            <p>${localStorage.getItem('mainSubtitle') || 'OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细'}</p>
         </div>
     </div>
     <div class="container">
