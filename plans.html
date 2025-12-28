@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云之印全流程计划书 - 方案配置</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .section h2 {
+            color: #2c3e7b;
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        th {
+            background: linear-gradient(135deg, #2c3e7b 0%, #1a2a5e 100%);
+            color: white;
+            font-weight: 500;
+        }
+        .feature-col {
+            text-align: left;
+            background: #f8f9fa;
+            font-weight: 500;
+            min-width: 280px;
+        }
+        .category-row td {
+            background: #e8ecf4;
+            font-weight: bold;
+            color: #2c3e7b;
+            text-align: left;
+        }
+        .price-row td {
+            background: #fff8e6;
+            color: #d35400;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .check {
+            color: #27ae60;
+            font-size: 20px;
+        }
+        .cross {
+            color: #e74c3c;
+            font-size: 20px;
+        }
+        .plan-header {
+            min-width: 150px;
+        }
+        .plan-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .plan-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        /* 服务级别表格 */
+        .service-table td {
+            text-align: left;
+            vertical-align: top;
+        }
+        .service-table td:last-child {
+            text-align: right;
+            white-space: nowrap;
+            font-weight: bold;
+            color: #d35400;
+        }
+        .service-table td:first-child {
+            font-weight: bold;
+            color: #2c3e7b;
+            width: 150px;
+        }
+        /* 按钮样式 */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+        }
+        .btn-info {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #2c3e7b;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        /* 打印样式 */
+        @media print {
+            body {
+                background: white;
+            }
+            .header {
+                background: #2c3e7b !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .section {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+            .btn-group, .footer {
+                display: none;
+            }
+            th {
+                background: #2c3e7b !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>云之印全流程计划书</h1>
+        <p>OPS接单及生产管理系统 & Tflow印前自动化系统 - 方案配置明细</p>
+    </div>
+
+    <div class="container">
+        <!-- 方案对比表 -->
+        <div class="section">
+            <h2>📋 功能模块配置对比</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="feature-col">功能</th>
+                        <th class="plan-header">
+                            <span class="plan-name">方案一</span><br>
+                            <span class="plan-subtitle">(自定义)</span>
+                        </th>
+                        <th class="plan-header">
+                            <span class="plan-name">方案二</span><br>
+                            <span class="plan-subtitle">(经济型)</span>
+                        </th>
+                        <th class="plan-header">
+                            <span class="plan-name">方案三</span><br>
+                            <span class="plan-subtitle">(全套)</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 价格行 -->
+                    <tr class="price-row">
+                        <td class="feature-col" style="color: #d35400;">价格</td>
+                        <td>待定</td>
+                        <td>15万</td>
+                        <td>49万</td>
+                    </tr>
+                    
+                    <!-- 商务系统 -->
+                    <tr class="category-row"><td colspan="4">商务系统</td></tr>
+                    <tr><td class="feature-col">私有化软件部署</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">商务系统接收订单方式</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">客户电脑自助式下单、查单</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">客户自助小程序下单、查单</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">内部员工代客下单</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">对接第三方商城</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">下单属性是否正确自动校验，防止出错</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">标准产品报价(纸张费用+抄表费用+后道费用)</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">用excel表格开单</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">代理商模式（代理商拥有自己的域名、品牌、报价体系）</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">多品牌，各品牌独立核算</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    
+                    <!-- 客户管理 -->
+                    <tr class="category-row"><td colspan="4">客户管理</td></tr>
+                    <tr><td class="feature-col">客户分组管理</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">阶梯价格</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">协议价</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">按销售单收款</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">按发货单收款</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">应收款对账记销帐</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">退款管理</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    
+                    <!-- 文件处理 -->
+                    <tr class="category-row"><td colspan="4">文件处理(对接Tflow印前处理系统)</td></tr>
+                    <tr><td class="feature-col">文件尺寸、页数、单双面、色彩模式预检</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">数码印刷自动拼版</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">自动打角线</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">自动打生产条码</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">数码的骑马钉，无线胶装、锁线、精装拼版</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">合批次单生产（订单蓄水池，自动合批次混合合版）</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">传统名片、单张拼版合版</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">传统印刷书刊拼版、合版</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">包装产品</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">CDR、AI文件自动转成PDF</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">自动分离刀线（需按照乙方的标准命名专色）</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    
+                    <!-- 生产管理 -->
+                    <tr class="category-row"><td colspan="4">生产管理</td></tr>
+                    <tr><td class="feature-col">生产进度监控</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">后道设备(覆膜,裁切)</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">物料使用计算，库存扣减</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">缩略图显示</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">自定义工单样式</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">刀版管理</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">套原有刀版</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">多生产站点（扫码生产管理，出货）</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    
+                    <!-- 财务管理 -->
+                    <tr class="category-row"><td colspan="4">财务管理（往来流水账）</td></tr>
+                    <tr><td class="feature-col">往来账</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">业务员负责客户管理</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">退款管理</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">自定义员工绩效计算(excel表格计算)</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    
+                    <!-- 高级财务 -->
+                    <tr class="category-row"><td colspan="4">高级财务（业财融合）</td></tr>
+                    <tr><td class="feature-col">对接金蝶（金蝶方面的实施费用，甲方自行与金蝶方签合同）</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">分类明细账</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">分类总账</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">银行日记账</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">现金日记账</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">资产负债表、现金流量表、利润表</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">生产成本会计核算、结转</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    
+                    <!-- 发货管理 -->
+                    <tr class="category-row"><td colspan="4">发货管理</td></tr>
+                    <tr><td class="feature-col">手工填入计算运费</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">自动计算运费</td><td></td><td class="cross">✘</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">对接顺丰</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">对接快递100</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">分批次发货</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">多地址发货</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    
+                    <!-- 服务 -->
+                    <tr class="category-row"><td colspan="4">服务</td></tr>
+                    <tr><td class="feature-col">现场服务（两周）</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">5x8小时售后服务</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                    <tr><td class="feature-col">年度服务费</td><td></td><td class="check">✔</td><td class="check">✔</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 服务级别说明 -->
+        <div class="section">
+            <h2>🛠️ 服务级别说明</h2>
+            <table class="service-table">
+                <thead>
+                    <tr>
+                        <th>服务级别</th>
+                        <th>服务内容</th>
+                        <th>价格</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>所有级别共用</td>
+                        <td>
+                            1. 软件Bug修正<br>
+                            2. 软件升级<br>
+                            3. 听取客户修改及升级意见<br>
+                            4. 如合同模块有相应约定，上了某些模块后必须购买2级别以上服务<br>
+                            5. 若客户购买了1级别服务，想定制其他功能，甲乙双方可商讨费用
+                        </td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>级别1</td>
+                        <td>
+                            1. 标准年度升级<br>
+                            2. 5x8小时标准服务（周一至周五 9:00-18:00）<br>
+                            3. 标准拼版方法<br>
+                            4. 第一次现场服务两天，其余远程服务<br>
+                            5. 每季度一次远程系统巡检，检查系统运行状态<br>
+                            6. 数据库性能优化建议
+                        </td>
+                        <td>￥30,000/年</td>
+                    </tr>
+                    <tr>
+                        <td>级别2</td>
+                        <td>定制化售后服务，如服务时间、定制化内容修改</td>
+                        <td>双方商讨</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 方案说明 -->
+        <div class="section">
+            <h2>📝 方案说明</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">方案</th>
+                        <th>适用场景</th>
+                        <th style="width: 100px;">参考价格</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: bold; color: #2c3e7b;">方案一（自定义）</td>
+                        <td style="text-align: left;">根据客户实际需求，灵活选择功能模块，适合有明确需求且预算有限的客户。</td>
+                        <td style="color: #d35400; font-weight: bold;">待定</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; color: #2c3e7b;">方案二（经济型）</td>
+                        <td style="text-align: left;">包含核心功能模块，满足中小型印刷企业的基本需求，性价比高。适合初次数字化转型的企业。</td>
+                        <td style="color: #d35400; font-weight: bold;">15万</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; color: #2c3e7b;">方案三（全套）</td>
+                        <td style="text-align: left;">包含全部功能模块，支持多品牌、多站点、高级财务等高级功能。适合大型印刷企业或有复杂业务需求的客户。</td>
+                        <td style="color: #d35400; font-weight: bold;">49万</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="window.print()">🖨️ 打印方案</button>
+            <button class="btn btn-secondary" onclick="exportPDF()">📥 导出PDF</button>
+            <a href="index.html" class="btn btn-info">📝 进入合同系统</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Deep Mind Solutions 广州多普网络科技有限公司</p>
+        <p>联系邮箱：<a href="mailto:info@deepmind.cn">info@deepmind.cn</a></p>
+    </div>
+
+    <script>
+        function exportPDF() {
+            alert('请使用浏览器的打印功能（Ctrl+P），选择"另存为PDF"来导出PDF文件。');
+            window.print();
+        }
+    </script>
+</body>
+</html>
