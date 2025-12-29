@@ -1824,7 +1824,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${localStorage.getItem('mainTitle') || '印刷全流程计划书'} - 方案配置</title>
+    <title>${(customers && customers[currentCustomerId] && customers[currentCustomerId].name && customers[currentCustomerId].name !== '默认客户') ? customers[currentCustomerId].name + ' - ' : ''}${localStorage.getItem('mainTitle') || '印刷全流程计划书'} - 方案配置</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; color: #333; height: auto; min-height: auto; }
