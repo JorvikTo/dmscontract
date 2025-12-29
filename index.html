@@ -1261,23 +1261,96 @@
 
         // 添加方案
         function addPlan() {
-            const newPlan = {
-                name: `方案${plans.length + 1}`,
-                subtitle: '自定义',
-                price: '',
-                remark: ''
+            // 构建位置选择对话框
+            let positionOptions = '<option value="-1">在最后添加</option>';
+            for (let i = 0; i < plans.length; i++) {
+                positionOptions += `<option value="${i}">在"${plans[i].name}"后面</option>`;
+            }
+            
+            // 创建自定义对话框
+            const dialog = document.createElement('div');
+            dialog.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;';
+            dialog.innerHTML = `
+                <div style="background:white;padding:30px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);max-width:400px;width:90%;">
+                    <h3 style="margin-bottom:20px;color:#2c5282;">添加新方案</h3>
+                    <div style="margin-bottom:15px;">
+                        <label style="display:block;margin-bottom:8px;font-weight:500;">方案名称：</label>
+                        <input type="text" id="new-plan-name" value="方案${plans.length + 1}" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label style="display:block;margin-bottom:8px;font-weight:500;">插入位置：</label>
+                        <select id="new-plan-position" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+                            ${positionOptions}
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:10px;justify-content:flex-end;">
+                        <button id="cancel-add-plan" style="padding:10px 20px;border:1px solid #ddd;background:white;border-radius:6px;cursor:pointer;">取消</button>
+                        <button id="confirm-add-plan" style="padding:10px 20px;border:none;background:#27ae60;color:white;border-radius:6px;cursor:pointer;">确定添加</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+            
+            // 聚焦到名称输入框
+            document.getElementById('new-plan-name').focus();
+            document.getElementById('new-plan-name').select();
+            
+            // 取消按钮
+            document.getElementById('cancel-add-plan').onclick = function() {
+                document.body.removeChild(dialog);
             };
-            plans.push(newPlan);
-
-            // 为每个功能添加新列
-            features.forEach(category => {
-                category.features.forEach(feature => {
-                    feature.values.push('');
-                });
+            
+            // 确定按钮
+            document.getElementById('confirm-add-plan').onclick = function() {
+                const planName = document.getElementById('new-plan-name').value.trim() || `方案${plans.length + 1}`;
+                const position = parseInt(document.getElementById('new-plan-position').value);
+                
+                const newPlan = {
+                    name: planName,
+                    subtitle: '自定义',
+                    price: '',
+                    remark: ''
+                };
+                
+                if (position === -1) {
+                    // 添加到最后
+                    plans.push(newPlan);
+                    features.forEach(category => {
+                        category.features.forEach(feature => {
+                            feature.values.push('');
+                        });
+                    });
+                } else {
+                    // 插入到指定位置后面
+                    const insertIndex = position + 1;
+                    plans.splice(insertIndex, 0, newPlan);
+                    features.forEach(category => {
+                        category.features.forEach(feature => {
+                            feature.values.splice(insertIndex, 0, '');
+                        });
+                    });
+                }
+                
+                saveData();
+                renderPlanTable();
+                document.body.removeChild(dialog);
+            };
+            
+            // 点击背景关闭
+            dialog.onclick = function(e) {
+                if (e.target === dialog) {
+                    document.body.removeChild(dialog);
+                }
+            };
+            
+            // 回车确认
+            dialog.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('confirm-add-plan').click();
+                } else if (e.key === 'Escape') {
+                    document.body.removeChild(dialog);
+                }
             });
-
-            saveData();
-            renderPlanTable();
         }
 
         // 删除方案
