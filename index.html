@@ -633,12 +633,170 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        /* 合同编辑模式样式 */
+        .contract-edit-toolbar {
+            background: #f0f4f8;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .contract-edit-toolbar .toolbar-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .contract-edit-toolbar .toolbar-info {
+            font-size: 13px;
+            color: #666;
+        }
+        .edit-mode-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .edit-mode-btn.edit-on {
+            background: #e74c3c;
+            color: white;
+        }
+        .edit-mode-btn.edit-off {
+            background: #27ae60;
+            color: white;
+        }
+        .edit-mode-btn.save-contract {
+            background: #3498db;
+            color: white;
+        }
+        .edit-mode-btn.reset-contract {
+            background: #e67e22;
+            color: white;
+        }
+        .contract-preview.editing .editable-block {
+            border: 1px dashed #3498db;
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .contract-preview.editing .editable-block:hover {
+            background: #edf5ff;
+            border-color: #2980b9;
+        }
+        .contract-preview.editing .editable-block:hover::after {
+            content: '点击编辑';
+            position: absolute;
+            top: 2px;
+            right: 8px;
+            font-size: 11px;
+            color: #3498db;
+            background: white;
+            padding: 1px 6px;
+            border-radius: 3px;
+            border: 1px solid #3498db;
+        }
+        .block-actions {
+            display: none;
+            position: absolute;
+            left: -35px;
+            top: 50%;
+            transform: translateY(-50%);
+            flex-direction: column;
+            gap: 3px;
+        }
+        .contract-preview.editing .editable-block:hover .block-actions {
+            display: flex;
+        }
+        .block-action-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            color: white;
+            padding: 0;
+            line-height: 24px;
+            text-align: center;
+        }
+        .block-action-btn.add-block {
+            background: #27ae60;
+        }
+        .block-action-btn.del-block {
+            background: #e74c3c;
+        }
+        .block-action-btn.move-up {
+            background: #3498db;
+        }
+        .block-action-btn.move-down {
+            background: #3498db;
+        }
+        /* 合同编辑对话框 */
+        .contract-edit-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .contract-edit-dialog .dialog-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .contract-edit-dialog h3 {
+            margin-bottom: 15px;
+            color: #2c5282;
+        }
+        .contract-edit-dialog textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            resize: vertical;
+        }
+        .contract-edit-dialog .dialog-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+        .contract-edit-dialog .dialog-btns button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
         @media print {
             body {
                 background: white;
             }
-            .header, .tabs, .btn-group, .instructions {
-                display: none;
+            .header, .tabs, .btn-group, .instructions, .contract-edit-toolbar, .block-actions {
+                display: none !important;
             }
             .panel {
                 box-shadow: none;
@@ -646,6 +804,14 @@
             .contract-preview {
                 border: none;
                 padding: 20px;
+            }
+            .contract-preview.editing .editable-block {
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+            .contract-preview.editing .editable-block:hover::after {
+                display: none;
             }
         }
     </style>
@@ -819,6 +985,14 @@
 
         <!-- 合同预览面板 -->
         <div id="preview-panel" class="panel">
+            <div class="contract-edit-toolbar" id="contract-edit-toolbar">
+                <div class="toolbar-left">
+                    <button class="edit-mode-btn edit-off" id="editModeBtn" onclick="toggleContractEditMode()">编辑合同内容</button>
+                    <button class="edit-mode-btn save-contract" onclick="saveContractContent()">保存合同</button>
+                    <button class="edit-mode-btn reset-contract" onclick="resetContractContent()">恢复默认</button>
+                    <span class="toolbar-info" id="editModeInfo">点击"编辑合同内容"可以直接修改合同文字</span>
+                </div>
+            </div>
             <div id="contract-content" class="contract-preview">
                 <!-- 合同内容将动态生成 -->
             </div>
@@ -944,6 +1118,8 @@
         let features = [];
         let services = [];
         let selectedPlanIndex = -1;
+        let contractBlocks = []; // 合同内容块
+        let contractEditMode = false; // 合同编辑模式
 
         // 编辑主标题
         function editMainTitle() {
@@ -1101,6 +1277,7 @@
                 localStorage.removeItem('dms_plans_' + currentCustomerId);
                 localStorage.removeItem('dms_features_' + currentCustomerId);
                 localStorage.removeItem('dms_services_' + currentCustomerId);
+                localStorage.removeItem('dms_contract_' + currentCustomerId);
                 delete customers[currentCustomerId];
                 currentCustomerId = 'default';
                 saveCustomers();
@@ -1128,11 +1305,15 @@
             localStorage.setItem(key_plans, JSON.stringify(plans));
             localStorage.setItem(key_features, JSON.stringify(features));
             localStorage.setItem(key_services, JSON.stringify(services));
+            // 保存合同内容
+            if (contractBlocks && contractBlocks.length > 0) {
+                saveContractBlocks();
+            }
             // 保存标题
             customers[currentCustomerId].title = document.getElementById('mainTitle').textContent;
             customers[currentCustomerId].subtitle = document.getElementById('mainSubtitle').textContent;
             saveCustomers();
-            alert('客户 "' + customers[currentCustomerId].name + '" 的方案已保存！');
+            alert('客户 "' + customers[currentCustomerId].name + '" 的方案和合同已保存！');
         }
 
         // 加载客户数据
@@ -1632,6 +1813,9 @@
                 return;
             }
 
+            // 加载该客户的合同内容块
+            loadContractBlocks();
+
             const partyAName = document.getElementById('party-a-name').value || '________';
             const partyAAddress = document.getElementById('party-a-address').value || '________';
             const partyAPM = document.getElementById('party-a-pm').value || '________';
@@ -1647,6 +1831,23 @@
             const annualFee = document.getElementById('annual-fee').value || '____';
 
             const selectedPlan = plans[selectedPlanIndex];
+
+            // 模板变量映射
+            const templateVars = {
+                '{{partyAName}}': partyAName,
+                '{{partyAAddress}}': partyAAddress,
+                '{{partyAPM}}': partyAPM,
+                '{{partyAPhone}}': partyAPhone,
+                '{{partyBName}}': partyBName,
+                '{{partyBAddress}}': partyBAddress,
+                '{{partyBPM}}': partyBPM,
+                '{{partyBPhone}}': partyBPhone,
+                '{{partyBWechat}}': partyBWechat,
+                '{{contractNo}}': contractNo,
+                '{{originalPrice}}': originalPrice,
+                '{{discountPrice}}': discountPrice,
+                '{{annualFee}}': annualFee
+            };
 
             // 生成功能清单表格
             let featureTableHTML = '<table style="width:100%; margin: 20px 0;"><thead><tr><th style="text-align:left;">功能</th><th style="width:80px;">包含</th></tr></thead><tbody>';
@@ -1669,249 +1870,354 @@
             });
             serviceTableHTML += '</tbody></table>';
 
-            const contractHTML = `
-                <div class="footer-info">
-                    Deep Mind Solutions 广州多普网络科技有限公司 info@deepmind.cn
-                </div>
+            // 从 contractBlocks 数据驱动渲染合同
+            let contractHTML = '';
+            contractBlocks.forEach((block, idx) => {
+                let blockContent = block.content;
+                // 替换模板变量
+                for (const [key, val] of Object.entries(templateVars)) {
+                    blockContent = blockContent.split(key).join(val);
+                }
+                if (block.title) {
+                    block.title = block.title;
+                }
 
-                <h1>软件使用许可及技术咨询、技术开发合同</h1>
+                let html = '';
+                switch (block.type) {
+                    case 'footer-info':
+                        html = `<div class="footer-info">${blockContent}</div>`;
+                        break;
+                    case 'h1':
+                        html = `<h1>${blockContent}</h1>`;
+                        break;
+                    case 'h2':
+                        html = `<h2>${blockContent}</h2>`;
+                        break;
+                    case 'h3':
+                        html = `<h3>${blockContent}</h3>`;
+                        break;
+                    case 'contract-header':
+                        html = `<div class="contract-header">${blockContent}</div>`;
+                        break;
+                    case 'party-info':
+                        const partyLines = blockContent.split('\n');
+                        html = '<div class="party-info">' + partyLines.map(line => {
+                            const parts = line.split('：');
+                            return `<p><strong>${parts[0]}：</strong>${parts.slice(1).join('：')}</p>`;
+                        }).join('') + '</div>';
+                        break;
+                    case 'paragraph':
+                        html = `<p>${blockContent}</p>`;
+                        break;
+                    case 'paragraph-bold':
+                        html = `<p><strong>${blockContent}</strong></p>`;
+                        break;
+                    case 'article':
+                        html = `<div class="article"><p>${blockContent}</p></div>`;
+                        break;
+                    case 'article-titled':
+                        const titleText = block.title || '';
+                        const contentLines = blockContent.split('\n');
+                        const firstLine = contentLines[0];
+                        const restLines = contentLines.slice(1);
+                        html = `<div class="article"><p class="article-title">${titleText}</p><p>${firstLine}</p>`;
+                        restLines.forEach(line => {
+                            html += `<p class="sub-item">${line}</p>`;
+                        });
+                        html += '</div>';
+                        break;
+                    case 'pm-info-a':
+                    case 'pm-info-b':
+                        const pmLines = blockContent.split('\n');
+                        html = '<div class="article">';
+                        pmLines.forEach((line, i) => {
+                            if (i === 0) {
+                                html += `<p><strong>${line}</strong></p>`;
+                            } else {
+                                html += `<p class="sub-item">${line}</p>`;
+                            }
+                        });
+                        html += '</div>';
+                        break;
+                    case 'sub-items':
+                        const subLines = blockContent.split('\n');
+                        html = subLines.map(line => `<p class="sub-item">${line}</p>`).join('');
+                        break;
+                    case 'feature-table':
+                        html = featureTableHTML;
+                        break;
+                    case 'service-table':
+                        html = serviceTableHTML;
+                        break;
+                    case 'signature':
+                        html = `<div class="signature">
+                            <div class="signature-block">
+                                <p><strong>甲方：</strong></p>
+                                <div class="signature-line"></div>
+                                <p><strong>签约代表：</strong></p>
+                                <div class="signature-line"></div>
+                                <p><strong>日期：</strong>____年____月____日</p>
+                            </div>
+                            <div class="signature-block">
+                                <p><strong>乙方：</strong></p>
+                                <div class="signature-line"></div>
+                                <p><strong>签约代表：</strong></p>
+                                <div class="signature-line"></div>
+                                <p><strong>日期：</strong>____年____月____日</p>
+                            </div>
+                        </div>`;
+                        break;
+                    case 'appendix-a-title':
+                    case 'appendix-b-title':
+                        html = `<div class="appendix"><h2>${blockContent}</h2></div>`;
+                        break;
+                    case 'sla-level':
+                        const slaTitle = block.title || '';
+                        const slaLines = blockContent.split('\n');
+                        html = `<p><strong>${slaTitle}</strong></p>`;
+                        slaLines.forEach(line => {
+                            if (line.startsWith('•')) {
+                                html += `<p class="sub-item">${line}</p>`;
+                            } else {
+                                html += `<p>${line}</p>`;
+                            }
+                        });
+                        break;
+                    case 'appendix-b-table':
+                        const rows = blockContent.split('\n');
+                        html = '<table style="width:100%; margin: 20px 0;"><thead><tr><th>产品</th><th>功能描述</th><th>单价</th></tr></thead><tbody>';
+                        rows.forEach(row => {
+                            const cols = row.split('|');
+                            html += `<tr><td>${cols[0] || ''}</td><td>${cols[1] || ''}</td><td>${cols[2] || ''}</td></tr>`;
+                        });
+                        html += '</tbody></table>';
+                        break;
+                    default:
+                        html = `<p>${blockContent}</p>`;
+                }
 
-                <div class="contract-header">
-                    合同编号：${contractNo}
-                </div>
-
-                <div class="party-info">
-                    <p><strong>甲方：</strong>${partyAName}</p>
-                    <p><strong>地址：</strong>${partyAAddress}</p>
-                    <p><strong>乙方：</strong>${partyBName}</p>
-                    <p><strong>地址：</strong>${partyBAddress}</p>
-                </div>
-
-                <p>甲乙双方经友好协商达成如下协议，以共同遵守：</p>
-
-                <div class="article">
-                    <p>1. 甲方向乙方购买"OPS接单及生产管理系统及Tflow印前自动化系统"使用授权及相应的软件开发、技术咨询等服务；</p>
-                </div>
-
-                <div class="article">
-                    <p class="article-title">2. 合同总则：</p>
-                    <p>本合同欲达成的目的为：</p>
-                    <p class="sub-item">1. 甲方通过乙方交付的系统或服务，其客户或内部软件能将文件，通过订单系统接入，进行，生产订单管理、发货管理；</p>
-                    <p class="sub-item">2. 乙方订单管理系统将生产文件对接到甲方印刷设备的热文件夹或者JDF（需甲方设备支持）入口；</p>
-                    <p class="sub-item">3. 甲方通过生产管理系统，能知道目前设备印刷到哪个文件，订单的生产状态；</p>
-                    <p class="sub-item">4. 在合同履行过程中若遇到分歧或障碍，甲乙双方应以有利于实现合同目的及促进交易的原则履行合同、解释合同；</p>
-                    <p class="sub-item">5. 双方在合同签订前的口头的，书面的讨论，仅作合同解释的参考，如有冲突或超出此合同约定范围的，以此合同为准；</p>
-                    <p class="sub-item">6. 本合同授权的软件个数为针对壹个OPS的授权及壹个拼版软件授权，如需增加，另行支付费用；</p>
-                    <p class="sub-item">7. 本合同只做印刷相关的业务，生产流程等功能，不做诸如OA行政办公类，员工报销类等的功能。</p>
-                    <p class="sub-item">8. 双方在合同履行的各个阶段（安装部署，培训，验收，售后服务等），均以本合同指定的联络人（项目经理）的微信沟通为准，甲乙双方项目经理应自行协调内部并形成统一的意见，双方各自指定的项目经理的意见为代表该方的最终意见，若某方更换项目经理，应提前14天以书面形式通知对方。</p>
-                </div>
-
-                <div class="article">
-                    <p><strong>甲方项目经理：</strong></p>
-                    <p class="sub-item">姓名：${partyAPM}</p>
-                    <p class="sub-item">电话：${partyAPhone}</p>
-                </div>
-
-                <div class="article">
-                    <p><strong>乙方项目经理：</strong></p>
-                    <p class="sub-item">姓名：${partyBPM}</p>
-                    <p class="sub-item">电话：${partyBPhone}</p>
-                    <p class="sub-item">微信：${partyBWechat}</p>
-                </div>
-
-                <h2>一、软件许可证费用、维护费</h2>
-                <p>本合同所有价格含税费。本合同所有价格含1%增值税专用发票，如遇以后政府提高税费，则按付款当时的税率增加相应的税费。</p>
-                <p>软件系统授权使用内容及相应开发、技术咨询服务在下表列明：</p>
-
-                ${featureTableHTML}
-
-                <p><strong>OPS会计模块，给甲方免费更新，有什么新功能，只要甲方支付年费，乙方都给甲方升级。</strong></p>
-
-                <h3>服务级别说明</h3>
-                ${serviceTableHTML}
-
-                <h2>二、付款方式</h2>
-                <p><strong>总价：</strong>原价${originalPrice}万（标准版），甲方优惠价为${discountPrice}万。</p>
-                <p><strong>付款方式：</strong></p>
-                <p class="sub-item">1. 合同签署后支付50%。</p>
-                <p class="sub-item">2. 合同签订后的第一年，赠送第一年服务费。</p>
-                <p class="sub-item">3. 系统投产后，支付30%。投产定义，见合同第三条"交付、验收及投产"的说明。</p>
-                <p class="sub-item">4. 余款20%在系统上线后3个月内付清。</p>
-                <p class="sub-item">5. 合同签订日的每12个月，甲方支付下一年度的年费。</p>
-                <p class="sub-item">6. 乙方在收到甲方付款后5个工作日内，开具相应的增值税专用发票。</p>
-
-                <h2>三、交付、验收及投产</h2>
-                <p><strong>(一) 软件交付：</strong>软件安装到甲方指定服务器并激活后，为软件的交付。甲方应为软件的安装提供便利条件，如符合甲方业务量相应需要匹配的能让系统运行畅顺的的硬件，网络环境等，若因甲方自身超出约定时间未能提供硬件及网络问题导致的投产迟缓的，不是乙方责任。</p>
-
-                <p><strong>(二) 验收总原则及投产：</strong></p>
-                <p><strong>1. 验收总原则：</strong></p>
-                <p class="sub-item">1) 任何因甲方内部事务的问题，如人员配备，人员调岗，人员辞职，人员工作时间分配不足，甲方内部审批流程，甲方部门之间的协作等内部事务导致软件投产迟缓的，均不属于甲方不支付乙方费用的理由；</p>
-                <p class="sub-item">2) 甲方提出的需求不属于合同所覆盖的功能的，不能作为甲方不支付乙方费用的理由；</p>
-                <p class="sub-item">3) 如因第三方或第三方软件系统导致的功能障碍，甲乙双方应尽量协商，互相协助，绕开第三方软件的限制，以让项目能正常往前推进。</p>
-                <p class="sub-item">4) 乙方交付后，甲方应对软件立即地，积极地，自发地展开投产工作，甲方应该自行配备足够的人员负责投产工作。若软件功能与甲方实际业务流程有差异的，双方应充分地善意地沟通，若通过甲方调整工作流程后能有利于推进项目投产并达有利于实现合同目的的，甲方应善意地积极地予以配合，包括但不限于改变已有内部流程，增购模块（如有）/服务，增购其余第三方软件系统等。</p>
-                <p class="sub-item">5) 若有问题，乙方应以书面形式，列出问题清单给甲方。</p>
-                <p class="sub-item" style="color: #2c3e7b; font-weight: bold;">6) 甲方应在软件交付后15个工作日内完成验收，并以书面形式向乙方提交验收报告或异议清单。</p>
-                <p class="sub-item" style="color: #2c3e7b; font-weight: bold;">7) 若甲方在软件交付后15个工作日内未以书面形式向乙方提出异议的，视为验收通过。</p>
-
-                <p><strong>2. "投产"：</strong></p>
-                <p>甲方的订单通过软件的各功能模块，正常流转，甲方通过乙方系统能将成品交付给顾客的，为投产成功。因不属于乙方系统导致的生产障碍，诸如文件本身的问题、打印设备质量导致顾客不收货、网络传输原因导致文件传输失败，或其他第三方软件、系统、设备导致的投产阻碍，不属于乙方责任。</p>
-
-                <h2>四、双方权利及义务</h2>
-                <p>(按以下排列的先后顺序确定双方权利义务的履行顺序)</p>
-                <p class="sub-item">1. 甲方支付款项；</p>
-                <p class="sub-item">2. 乙方在收到付款后，作出向甲方指定服务器安装的准备工作；</p>
-                <p class="sub-item">3. 甲方提供符合系统要求的服务器及网络环境供乙方安装软件，甲方负责购买所需的第三方软硬件，如windows操作系统、条码枪等；</p>
-                <p class="sub-item">4. 乙方安装接单系统到甲方指定的服务器并激活软件；</p>
-                <p class="sub-item">5. 乙方测试拼版系统，是否符合甲方要求。</p>
-                <p class="sub-item">6. 甲方应安排项目人员与乙方对接，如测试文件准备，需求文档准备等；</p>
-                <p class="sub-item">7. 乙方安排人员对甲方进行项目对接，获取项目具体的测试文件，期望效果；</p>
-                <p class="sub-item">8. 系统交付安装后，甲方应积极开展投产工作。按合同的付款条件付款；</p>
-                <p class="sub-item">9. 乙方在甲方使用软件的过程中按服务级别远程地提供技术支持及解答问题；</p>
-                <p class="sub-item">10. 甲方应积极使用系统，在每次添加新产品或乙方调整了系统后，正式生产前，有义务对生产文件进行充分的测试，然后使系统应用于实际业务；</p>
-                <p class="sub-item">11. 乙方按本合同的维护条款进行维护；</p>
-
-                <h2>五、计算机软件著作权及相关的知识产权归属</h2>
-                <p class="sub-item">(一) 本合同的许可方式为"一般许可"，由乙方授权甲方使用软件。</p>
-                <p class="sub-item">(二) 甲方同意接受一个不可转让的非独占的使用许可，只准许甲方人员在指定服务器上使用该许可软件，上述使用仅限于甲方使用，若甲方分租给其他非甲方人员使用，则属违约，乙方有权采取包括但不限于以下的限制措施，1.限制甲方文件系统处理数量；2.限制甲方登录系统的人员数量；3.停止甲方使用系统。</p>
-                <p class="sub-item">(三) 源代码及软件系统配置、组成等诀窍（包括但不限于甲方采购、使用的第三方技术、生产参数的设定技巧，生产合单方式的排列组合等）属于乙方知识产权及商业秘密，乙方有权不向甲方交付及透露。</p>
-                <p class="sub-item">(四) 乙方应保证其合同范围内所出售的软件无知识产权纠纷，若遇第三方索偿，应由乙方承担因此产生的费用，与甲方无关。</p>
-
-                <h2>六、保密约定</h2>
-                <p class="sub-item">(一) 甲方通过本软件所获得的与软件无关的任何数据均归甲方所有，甲乙双方对在合作中互相知晓的对方的商业秘密及数据有保密的责任，未经对方允许不得泄露或用于其它用途。</p>
-                <p class="sub-item">(二) 本合同项下的价格及合作方式亦属保密事项，双方均不得以任何方式和理由透露给第三方，否则守约方将保留维护正当权益的权利。</p>
-                <p class="sub-item">(三) 乙方所使用、采购的第三方技术属于乙方商业秘密，若甲方在合作过程中知悉，应予以保密。</p>
-
-                <h2>七、不可抗力</h2>
-                <p>甲乙双方的任何一方由于不可抗力的原因不能履行合同时，应及时向对方通报不能履行或不能完全履行的理由，在取得有关证明以后，允许延期履行、部分履行或者不履行合同，并根据情况可部分或全部免予承担违约责任。</p>
-                <p>甲方同意鉴于互联网的特殊性，他人蓄意破坏，黑客攻击，计算机病毒入侵或发作，电信部门技术，政策，政府管制或者系统故障等属于不可抗力的，由此给甲方或者第三方造成的损失不应由乙方承担。</p>
-
-                <h2>八、违约责任</h2>
-                <p class="sub-item">(一) 甲乙双方本着真诚合作、相互信赖的原则，根据国家相关的法律、法规，协商解决在本合同执行过程中可能出现的违约纠纷和违约责任。</p>
-                <p class="sub-item">(二) 若甲方未按本合同所约定的期限缴付软件许可证费用，维护费的，定制费用的，或有损害乙方利益的行为，乙方有权停止甲方的软件使用权，并停止服务。</p>
-                <p class="sub-item">(三) 若乙方未按本合同所约定交付软件、提供服务的，甲方有权停止支付相应的款项。</p>
-                <p class="sub-item">(四) 若甲方透露合同所约定的优惠价给第三方，属重大违约，须补回与标准报价的差价给乙方。</p>
-
-                <h2>九、争议解决方式</h2>
-                <p>双方合同履行过程中发生争议，双方应协商解决。如果不能协商解决争议，任何一方均可将此争议向双方所在地人民法院起诉。</p>
-
-                <h2>十、其他</h2>
-                <p class="sub-item">(一) 本合同自双方签署之日起成立并生效，除非甲乙双方达成合意终止，合同自动延续。</p>
-                <p class="sub-item">(二) 本合同为双方的最终合同，未经双方书面同意，不得对此作任何修改。如有未尽事宜，可签订书面补充协议。补充协议与本协议具有同等法律效力。</p>
-                <p class="sub-item">(三) 甲乙双方均确认本合同内（合同头部或合同内指定的项目经理联络方式）所载地址、微信、电子邮件、电话为其有效的联系方式，若任何一方联系方式发生变更的，需于变更前提前14日书面告知对方，否则对发生变更前地址（包括电子邮件，微信，电话短信等）发送的文件均视为送达。</p>
-                <p class="sub-item">(四) 如乙方因经营变动或人员变动等不再具备提供维护服务时，若在服务期内，应保障服务到服务期结束后方能终止服务，并协调甲方与厂家进行服务对接事宜。</p>
-
-                <h2>十一、本合同一式两份，合同双方各持一份，均具有同等法律效力。</h2>
-
-                <div class="signature">
-                    <div class="signature-block">
-                        <p><strong>甲方：</strong></p>
-                        <div class="signature-line"></div>
-                        <p><strong>签约代表：</strong></p>
-                        <div class="signature-line"></div>
-                        <p><strong>日期：</strong>2025年____月____日</p>
+                // 编辑模式下包裹 editable-block
+                contractHTML += `<div class="editable-block" data-block-idx="${idx}" onclick="editContractBlock(${idx})">
+                    <div class="block-actions">
+                        <button class="block-action-btn add-block" onclick="event.stopPropagation(); addContractBlock(${idx})" title="在上方添加">↑</button>
+                        <button class="block-action-btn add-block" onclick="event.stopPropagation(); addContractBlock(${idx + 1})" title="在下方添加">↓</button>
+                        <button class="block-action-btn del-block" onclick="event.stopPropagation(); deleteContractBlock(${idx})" title="删除">×</button>
                     </div>
-                    <div class="signature-block">
-                        <p><strong>乙方：</strong></p>
-                        <div class="signature-line"></div>
-                        <p><strong>签约代表：</strong></p>
-                        <div class="signature-line"></div>
-                        <p><strong>日期：</strong>2025年____月____日</p>
-                    </div>
-                </div>
-
-                <div class="appendix">
-                    <h2>合同附件A 服务协议（Service Level Agreement）服务范围及响应时间</h2>
-
-                    <p class="sub-item">1. 乙方的服务范围仅限于乙方所售之软件的各功能模块，如不包括甲方自身软件的API编程，第三方软件的支持、网络、硬件、病毒、网络安全、系统安全等非乙方软件引起的问题。对于非乙方软件引起的问题。乙方可提供相应的技术建议，但不承担责任。</p>
-                    <p class="sub-item">2. 乙方在工作时间内为甲方按照服务协议约定的方式提供软件所需的售后服务，响应时间请参考服务等级及响应时间部分。</p>
-                    <p class="sub-item">3. 乙方对软件提供有偿的终身技术支持。对于不在合同规定范围内的服务请求，甲乙双方应重新协商费用。</p>
-                    <p class="sub-item">4. 因为PDF流程不可避免存在不可预知的缺陷，乙方不对最后生成的PDF文件作无缺陷担保，甲方应对新交付的功能处理的文件在生产前进行充分的测试，应对金额大的文件进行必要的印前检查等，因生产文件造成的任何直接或间接损失，包括但不限于数据丢失、利润损失、丧失商业机会等均不承担赔偿责任。甲方有责任对乙方软件所产生的相关数据进行备份，并维护系统的安全运行。</p>
-                    <p class="sub-item">5. 对于AI文件，CDR文件，（如标签，不干胶等），通常客户会将不同款数的文件放在一个画版上，如果需要自动化处理，需要将每个款式单独放置在一个画版上，异型、圆形的文件，还需要带上专色刀线。</p>
-
-                    <h3>服务等级及响应时间</h3>
-                    <p>乙方平时会将遇到的常见问题，写成文档，给予甲方自身的运维人员查看，以便其自行处理在以下列列举的工作时间以外的非工作时间段遇到的问题。如非工作时间的晚上十点前系统发生1、2级故障的，甲方又实在无法自行处理的，可致电乙方，乙方尽可能地给予甲方最大限度的帮助。</p>
-
-                    <p><strong>第1级 - 系统奔溃或不能访问</strong></p>
-                    <p>此等级为出现以下情况：</p>
-                    <p class="sub-item">• 服务完全启动不了或访问不了系统</p>
-                    <p class="sub-item">• 没有临时的解决方案并使甲方无法正常工作</p>
-                    <p class="sub-item">• 顾客无法访问系统</p>
-                    <p class="sub-item">• 系统冻结或者没有反应</p>
-                    <p>处理方式：此种情况可以直接电话联系乙方工程师，乙方工程师以电话及远程登录协助甲方排查及排除问题。</p>
-                    <p>电话沟通时间：工作日 星期一至五 9am – 6pm，北京时间</p>
-                    <p><strong>工作时间内60分钟响应</strong></p>
-
-                    <p><strong>第2级 - 严重影响业务</strong></p>
-                    <p>此等级为出现以下情况：</p>
-                    <p class="sub-item">• 软件功能减退</p>
-                    <p class="sub-item">• 某功能不能正常使用</p>
-                    <p class="sub-item">• 交货期或产品质量因系统问题受到影响</p>
-                    <p class="sub-item">• 排版不正确</p>
-                    <p>处理方式：甲方须通过网上售后系统汇报问题，乙方安排工程师在收到售后请求后跟进，乙方可通过网上售后系统与甲方沟通。</p>
-                    <p>处理时间：工作日 星期一至五 9am – 6pm，北京时间</p>
-                    <p><strong>3小时响应时间</strong></p>
-
-                    <p><strong>第3级 - 日常售后工作以及对业务微小影响</strong></p>
-                    <p>此等级为出现以下情况：</p>
-                    <p class="sub-item">• 业务受到轻微的影响</p>
-                    <p class="sub-item">• 因为系统的原因导致使用不方便</p>
-                    <p class="sub-item">• 搭建流程开发问题</p>
-                    <p class="sub-item">• 操作问题</p>
-                    <p class="sub-item">• 额外的培训请求</p>
-                    <p>甲方须通过网上售后系统汇报问题，乙方可不需要立即回答。</p>
-                    <p>处理时间：工作时间 星期一至五 9am – 6pm，北京时间</p>
-                    <p><strong>8小时响应时间</strong></p>
-                </div>
-
-                <div class="appendix">
-                    <h2>合同附件B</h2>
-                    <p>本合同不包括以下软件或虽未列举但类似的其他软件，甲方可以自行购买或咨询乙方</p>
-
-                    <table style="width:100%; margin: 20px 0;">
-                        <thead>
-                            <tr>
-                                <th>产品</th>
-                                <th>功能描述</th>
-                                <th>单价</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Windows操作系统及服务器</td>
-                                <td>承载乙方所提供的解决方案，须按乙方要求配置。</td>
-                                <td>自行购买</td>
-                            </tr>
-                            <tr>
-                                <td>Office系列软件</td>
-                                <td>转档Office格式时候用到</td>
-                                <td>自行购买</td>
-                            </tr>
-                            <tr>
-                                <td>Adobe系列软件</td>
-                                <td>转档PDF格式时候用到</td>
-                                <td>自行购买</td>
-                            </tr>
-                            <tr>
-                                <td>印前预检</td>
-                                <td>Pitstop, PDF toolBox</td>
-                                <td>自行购买</td>
-                            </tr>
-                            <tr>
-                                <td>带宽</td>
-                                <td>n/a</td>
-                                <td>自行购买</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="footer-info">
-                    Deep Mind Solutions 广州多普网络科技有限公司 info@deepmind.cn
-                </div>
-            `;
+                    ${html}
+                </div>`;
+            });
 
             document.getElementById('contract-content').innerHTML = contractHTML;
             showTab('preview');
+        }
+
+        // ======== 合同内容编辑功能 ========
+
+        // 加载合同内容块
+        function loadContractBlocks() {
+            const key = 'dms_contract_' + currentCustomerId;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                contractBlocks = JSON.parse(saved);
+            } else {
+                contractBlocks = JSON.parse(JSON.stringify(getDefaultContractBlocks()));
+            }
+        }
+
+        // 保存合同内容块
+        function saveContractBlocks() {
+            const key = 'dms_contract_' + currentCustomerId;
+            localStorage.setItem(key, JSON.stringify(contractBlocks));
+        }
+
+        // 切换合同编辑模式
+        function toggleContractEditMode() {
+            contractEditMode = !contractEditMode;
+            const btn = document.getElementById('editModeBtn');
+            const info = document.getElementById('editModeInfo');
+            const preview = document.getElementById('contract-content');
+
+            if (contractEditMode) {
+                btn.textContent = '退出编辑模式';
+                btn.className = 'edit-mode-btn edit-on';
+                info.textContent = '编辑模式已开启：点击任意段落可修改内容，悬停显示操作按钮';
+                preview.classList.add('editing');
+            } else {
+                btn.textContent = '编辑合同内容';
+                btn.className = 'edit-mode-btn edit-off';
+                info.textContent = '点击"编辑合同内容"可以直接修改合同文字';
+                preview.classList.remove('editing');
+            }
+        }
+
+        // 编辑合同内容块
+        function editContractBlock(idx) {
+            if (!contractEditMode) return;
+            const block = contractBlocks[idx];
+            if (!block) return;
+            // 不可编辑的类型
+            if (block.type === 'feature-table' || block.type === 'service-table' || block.type === 'signature') {
+                alert('此内容块为自动生成，无法直接编辑。\n功能表格请在"方案配置"中修改，服务表格请在服务级别中修改。');
+                return;
+            }
+
+            // 创建编辑对话框
+            const dialog = document.createElement('div');
+            dialog.className = 'contract-edit-dialog';
+            dialog.onclick = function(e) { if (e.target === dialog) dialog.remove(); };
+
+            const typeLabels = {
+                'footer-info': '页脚信息', 'h1': '主标题', 'h2': '二级标题', 'h3': '三级标题',
+                'contract-header': '合同头部', 'party-info': '甲乙方信息', 'paragraph': '段落',
+                'paragraph-bold': '加粗段落', 'article': '条款', 'article-titled': '带标题条款',
+                'pm-info-a': '甲方项目经理', 'pm-info-b': '乙方项目经理',
+                'sub-items': '子项列表', 'sla-level': 'SLA级别',
+                'appendix-a-title': '附件A标题', 'appendix-b-title': '附件B标题',
+                'appendix-b-table': '附件B表格'
+            };
+
+            let titleField = '';
+            if (block.type === 'article-titled' || block.type === 'sla-level') {
+                titleField = `<div style="margin-bottom:10px;"><label style="font-weight:bold;">标题：</label><input type="text" id="edit-block-title" value="${(block.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:14px;"></div>`;
+            }
+
+            let typeOptions = '';
+            for (const [t, label] of Object.entries(typeLabels)) {
+                typeOptions += `<option value="${t}" ${t === block.type ? 'selected' : ''}>${label}</option>`;
+            }
+
+            dialog.innerHTML = `
+                <div class="dialog-content">
+                    <h3>编辑合同内容块 #${idx + 1}</h3>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-weight:bold;">类型：</label>
+                        <select id="edit-block-type" style="padding:6px;border-radius:4px;border:1px solid #ddd;">
+                            ${typeOptions}
+                        </select>
+                    </div>
+                    ${titleField}
+                    <label style="font-weight:bold;">内容：</label>
+                    <textarea id="edit-block-content">${block.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+                    <p style="font-size:12px;color:#888;margin-top:5px;">提示：用 \n 换行，支持模板变量如 {{partyAName}}、{{contractNo}} 等</p>
+                    <div class="dialog-btns">
+                        <button style="background:#eee;border:1px solid #ddd;" onclick="this.closest('.contract-edit-dialog').remove()">取消</button>
+                        <button style="background:#3498db;color:white;border:none;" onclick="saveBlockEdit(${idx})">保存</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+            // 自动聚焦textarea
+            setTimeout(() => document.getElementById('edit-block-content').focus(), 100);
+        }
+
+        // 保存块编辑
+        function saveBlockEdit(idx) {
+            const content = document.getElementById('edit-block-content').value;
+            const type = document.getElementById('edit-block-type').value;
+            const titleEl = document.getElementById('edit-block-title');
+
+            contractBlocks[idx].content = content;
+            contractBlocks[idx].type = type;
+            if (titleEl) {
+                contractBlocks[idx].title = titleEl.value;
+            }
+
+            document.querySelector('.contract-edit-dialog').remove();
+            // 重新渲染合同
+            generateContract();
+            // 保持编辑模式
+            if (contractEditMode) {
+                document.getElementById('contract-content').classList.add('editing');
+            }
+        }
+
+        // 添加合同内容块
+        function addContractBlock(position) {
+            if (!contractEditMode) return;
+            const typeLabels = {
+                'paragraph': '段落', 'paragraph-bold': '加粗段落', 'h2': '二级标题',
+                'h3': '三级标题', 'sub-items': '子项列表', 'article': '条款',
+                'article-titled': '带标题条款', 'footer-info': '页脚信息',
+                'signature': '签名栏', 'sla-level': 'SLA级别'
+            };
+
+            const dialog = document.createElement('div');
+            dialog.className = 'contract-edit-dialog';
+            dialog.onclick = function(e) { if (e.target === dialog) dialog.remove(); };
+
+            let typeOptions = '';
+            for (const [t, label] of Object.entries(typeLabels)) {
+                typeOptions += `<option value="${t}">${label}</option>`;
+            }
+
+            dialog.innerHTML = `
+                <div class="dialog-content">
+                    <h3>添加新内容块（插入到第 ${position + 1} 位置）</h3>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-weight:bold;">类型：</label>
+                        <select id="new-block-type" style="padding:6px;border-radius:4px;border:1px solid #ddd;">
+                            ${typeOptions}
+                        </select>
+                    </div>
+                    <label style="font-weight:bold;">内容：</label>
+                    <textarea id="new-block-content" placeholder="请输入内容..."></textarea>
+                    <div class="dialog-btns">
+                        <button style="background:#eee;border:1px solid #ddd;" onclick="this.closest('.contract-edit-dialog').remove()">取消</button>
+                        <button style="background:#27ae60;color:white;border:none;" onclick="confirmAddBlock(${position})">添加</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+        }
+
+        // 确认添加块
+        function confirmAddBlock(position) {
+            const type = document.getElementById('new-block-type').value;
+            const content = document.getElementById('new-block-content').value;
+            if (!content.trim() && type !== 'signature') {
+                alert('请输入内容！');
+                return;
+            }
+            const newBlock = { type: type, content: content };
+            contractBlocks.splice(position, 0, newBlock);
+            document.querySelector('.contract-edit-dialog').remove();
+            generateContract();
+            if (contractEditMode) {
+                document.getElementById('contract-content').classList.add('editing');
+            }
+        }
+
+        // 删除合同内容块
+        function deleteContractBlock(idx) {
+            if (!contractEditMode) return;
+            const block = contractBlocks[idx];
+            const preview = block.content.substring(0, 30) + (block.content.length > 30 ? '...' : '');
+            if (confirm(`确定要删除这个内容块吗？\n“${preview}”`)) {
+                contractBlocks.splice(idx, 1);
+                generateContract();
+                if (contractEditMode) {
+                    document.getElementById('contract-content').classList.add('editing');
+                }
+            }
+        }
+
+        // 保存合同内容
+        function saveContractContent() {
+            saveContractBlocks();
+            alert('合同内容已保存到客户 "' + customers[currentCustomerId].name + '" ！');
+        }
+
+        // 恢复默认合同内容
+        function resetContractContent() {
+            if (confirm('确定要恢复默认合同内容吗？\n当前客户的合同修改将会丢失！')) {
+                localStorage.removeItem('dms_contract_' + currentCustomerId);
+                contractBlocks = JSON.parse(JSON.stringify(getDefaultContractBlocks()));
+                generateContract();
+                if (contractEditMode) {
+                    document.getElementById('contract-content').classList.add('editing');
+                }
+                alert('已恢复默认合同内容！');
+            }
         }
 
         // 导出Excel
@@ -1954,22 +2260,105 @@
                 localStorage.removeItem('dms_plans_' + currentCustomerId);
                 localStorage.removeItem('dms_features_' + currentCustomerId);
                 localStorage.removeItem('dms_services_' + currentCustomerId);
+                localStorage.removeItem('dms_contract_' + currentCustomerId);
                 plans = JSON.parse(JSON.stringify(getDefaultPlans()));
                 features = JSON.parse(JSON.stringify(getDefaultFeatures()));
                 services = JSON.parse(JSON.stringify(getDefaultServices()));
+                contractBlocks = JSON.parse(JSON.stringify(getDefaultContractBlocks()));
                 renderPlanTable();
                 renderServiceTable();
             }
         }
 
+        // 获取默认合同内容块
+        function getDefaultContractBlocks() {
+            return [
+                { type: 'footer-info', content: 'Deep Mind Solutions 广州多普网络科技有限公司 info@deepmind.cn' },
+                { type: 'h1', content: '软件使用许可及技术咨询、技术开发合同' },
+                { type: 'contract-header', content: '合同编号：{{contractNo}}' },
+                { type: 'party-info', content: '甲方：{{partyAName}}\n地址：{{partyAAddress}}\n乙方：{{partyBName}}\n地址：{{partyBAddress}}' },
+                { type: 'paragraph', content: '甲乙双方经友好协商达成如下协议，以共同遵守：' },
+                { type: 'article', content: '1. 甲方向乙方购买\u201cOPS接单及生产管理系统及Tflow印前自动化系统\u201d使用授权及相应的软件开发、技术咨询等服务；' },
+                { type: 'article-titled', title: '2. 合同总则：', content: '本合同欲达成的目的为：\n1. 甲方通过乙方交付的系统或服务，其客户或内部软件能将文件，通过订单系统接入，进行，生产订单管理、发货管理；\n2. 乙方订单管理系统将生产文件对接到甲方印刷设备的热文件夹或者JDF（需甲方设备支持）入口；\n3. 甲方通过生产管理系统，能知道目前设备印刷到哪个文件，订单的生产状态；\n4. 在合同履行过程中若遇到分歧或障碍，甲乙双方应以有利于实现合同目的及促进交易的原则履行合同、解释合同；\n5. 双方在合同签订前的口头的，书面的讨论，仅作合同解释的参考，如有冲突或超出此合同约定范围的，以此合同为准；\n6. 本合同授权的软件个数为针对壹个OPS的授权及壹个拼版软件授权，如需增加，另行支付费用；\n7. 本合同只做印刷相关的业务，生产流程等功能，不做诸如OA行政办公类，员工报销类等的功能。\n8. 双方在合同履行的各个阶段（安装部署，培训，验收，售后服务等），均以本合同指定的联络人（项目经理）的微信沟通为准，甲乙双方项目经理应自行协调内部并形成统一的意见，双方各自指定的项目经理的意见为代表该方的最终意见，若某方更换项目经理，应提前14天以书面形式通知对方。' },
+                { type: 'pm-info-a', content: '甲方项目经理：\n姓名：{{partyAPM}}\n电话：{{partyAPhone}}' },
+                { type: 'pm-info-b', content: '乙方项目经理：\n姓名：{{partyBPM}}\n电话：{{partyBPhone}}\n微信：{{partyBWechat}}' },
+                { type: 'h2', content: '一、软件许可证费用、维护费' },
+                { type: 'paragraph', content: '本合同所有价格含税费。本合同所有价格含1%增值税专用发票，如遇以后政府提高税费，则按付款当时的税率增加相应的税费。' },
+                { type: 'paragraph', content: '软件系统授权使用内容及相应开发、技术咨询服务在下表列明：' },
+                { type: 'feature-table', content: '[功能清单表格 - 自动生成]' },
+                { type: 'paragraph-bold', content: 'OPS会计模块，给甲方免费更新，有什么新功能，只要甲方支付年费，乙方都给甲方升级。' },
+                { type: 'h3', content: '服务级别说明' },
+                { type: 'service-table', content: '[服务级别表格 - 自动生成]' },
+                { type: 'h2', content: '二、付款方式' },
+                { type: 'paragraph', content: '总价：原价{{originalPrice}}万（标准版），甲方优惠价为{{discountPrice}}万。' },
+                { type: 'paragraph', content: '付款方式：' },
+                { type: 'sub-items', content: '1. 合同签署后支付50%。\n2. 合同签订后的第一年，赠送第一年服务费。\n3. 系统投产后，支付30%。投产定义，见合同第三条\u201c交付、验收及投产\u201d的说明。\n4. 余款20%在系统上线后3个月内付清。\n5. 合同签订日的每12个月，甲方支付下一年度的年费。\n6. 乙方在收到甲方付款后5个工作日内，开具相应的增值税专用发票。' },
+                { type: 'h2', content: '三、交付、验收及投产' },
+                { type: 'paragraph', content: '(一) 软件交付：软件安装到甲方指定服务器并激活后，为软件的交付。甲方应为软件的安装提供便利条件，如符合甲方业务量相应需要匹配的能让系统运行畅顺的的硬件，网络环境等，若因甲方自身超出约定时间未能提供硬件及网络问题导致的投产迟缓的，不是乙方责任。' },
+                { type: 'paragraph', content: '(二) 验收总原则及投产：' },
+                { type: 'paragraph', content: '1. 验收总原则：' },
+                { type: 'sub-items', content: '1) 任何因甲方内部事务的问题，如人员配备，人员调岗，人员辞职，人员工作时间分配不足，甲方内部审批流程，甲方部门之间的协作等内部事务导致软件投产迟缓的，均不属于甲方不支付乙方费用的理由；\n2) 甲方提出的需求不属于合同所覆盖的功能的，不能作为甲方不支付乙方费用的理由；\n3) 如因第三方或第三方软件系统导致的功能障碍，甲乙双方应尽量协商，互相协助，绕开第三方软件的限制，以让项目能正常往前推进。\n4) 乙方交付后，甲方应对软件立即地，积极地，自发地展开投产工作，甲方应该自行配备足够的人员负责投产工作。若软件功能与甲方实际业务流程有差异的，双方应充分地善意地沟通，若通过甲方调整工作流程后能有利于推进项目投产并达有利于实现合同目的的，甲方应善意地积极地予以配合，包括但不限于改变已有内部流程，增购模块（如有）/服务，增购其余第三方软件系统等。\n5) 若有问题，乙方应以书面形式，列出问题清单给甲方。\n6) 甲方应在软件交付后15个工作日内完成验收，并以书面形式向乙方提交验收报告或异议清单。\n7) 若甲方在软件交付后15个工作日内未以书面形式向乙方提出异议的，视为验收通过。' },
+                { type: 'paragraph', content: '2. \u201c投产\u201d：' },
+                { type: 'paragraph', content: '甲方的订单通过软件的各功能模块，正常流转，甲方通过乙方系统能将成品交付给顾客的，为投产成功。因不属于乙方系统导致的生产障碍，诸如文件本身的问题、打印设备质量导致顾客不收货、网络传输原因导致文件传输失败，或其他第三方软件、系统、设备导致的投产阻碍，不属于乙方责任。' },
+                { type: 'h2', content: '四、双方权利及义务' },
+                { type: 'paragraph', content: '(按以下排列的先后顺序确定双方权利义务的履行顺序)' },
+                { type: 'sub-items', content: '1. 甲方支付款项；\n2. 乙方在收到付款后，作出向甲方指定服务器安装的准备工作；\n3. 甲方提供符合系统要求的服务器及网络环境供乙方安装软件，甲方负责购买所需的第三方软硬件，如windows操作系统、条码枪等；\n4. 乙方安装接单系统到甲方指定的服务器并激活软件；\n5. 乙方测试拼版系统，是否符合甲方要求。\n6. 甲方应安排项目人员与乙方对接，如测试文件准备，需求文档准备等；\n7. 乙方安排人员对甲方进行项目对接，获取项目具体的测试文件，期望效果；\n8. 系统交付安装后，甲方应积极开展投产工作。按合同的付款条件付款；\n9. 乙方在甲方使用软件的过程中按服务级别远程地提供技术支持及解答问题；\n10. 甲方应积极使用系统，在每次添加新产品或乙方调整了系统后，正式生产前，有义务对生产文件进行充分的测试，然后使系统应用于实际业务；\n11. 乙方按本合同的维护条款进行维护；' },
+                { type: 'h2', content: '五、计算机软件著作权及相关的知识产权归属' },
+                { type: 'sub-items', content: '(一) 本合同的许可方式为\u201c一般许可\u201d，由乙方授权甲方使用软件。\n(二) 甲方同意接受一个不可转让的非独占的使用许可，只准许甲方人员在指定服务器上使用该许可软件，上述使用仅限于甲方使用，若甲方分租给其他非甲方人员使用，则属违约，乙方有权采取包括但不限于以下的限制措施，1.限制甲方文件系统处理数量；2.限制甲方登录系统的人员数量；3.停止甲方使用系统。\n(三) 源代码及软件系统配置、组成等诀窍（包括但不限于甲方采购、使用的第三方技术、生产参数的设定技巧，生产合单方式的排列组合等）属于乙方知识产权及商业秘密，乙方有权不向甲方交付及透露。\n(四) 乙方应保证其合同范围内所出售的软件无知识产权纠纷，若遇第三方索偿，应由乙方承担因此产生的费用，与甲方无关。' },
+                { type: 'h2', content: '六、保密约定' },
+                { type: 'sub-items', content: '(一) 甲方通过本软件所获得的与软件无关的任何数据均归甲方所有，甲乙双方对在合作中互相知晓的对方的商业秘密及数据有保密的责任，未经对方允许不得泄露或用于其它用途。\n(二) 本合同项下的价格及合作方式亦属保密事项，双方均不得以任何方式和理由透露给第三方，否则守约方将保留维护正当权益的权利。\n(三) 乙方所使用、采购的第三方技术属于乙方商业秘密，若甲方在合作过程中知悉，应予以保密。' },
+                { type: 'h2', content: '七、不可抗力' },
+                { type: 'paragraph', content: '甲乙双方的任何一方由于不可抗力的原因不能履行合同时，应及时向对方通报不能履行或不能完全履行的理由，在取得有关证明以后，允许延期履行、部分履行或者不履行合同，并根据情况可部分或全部免予承担违约责任。' },
+                { type: 'paragraph', content: '甲方同意鉴于互联网的特殊性，他人蓄意破坏，黑客攻击，计算机病毒入侵或发作，电信部门技术，政策，政府管制或者系统故障等属于不可抗力的，由此给甲方或者第三方造成的损失不应由乙方承担。' },
+                { type: 'h2', content: '八、违约责任' },
+                { type: 'sub-items', content: '(一) 甲乙双方本着真诚合作、相互信赖的原则，根据国家相关的法律、法规，协商解决在本合同执行过程中可能出现的违约纠纷和违约责任。\n(二) 若甲方未按本合同所约定的期限缴付软件许可证费用，维护费的，定制费用的，或有损害乙方利益的行为，乙方有权停止甲方的软件使用权，并停止服务。\n(三) 若乙方未按本合同所约定交付软件、提供服务的，甲方有权停止支付相应的款项。\n(四) 若甲方透露合同所约定的优惠价给第三方，属重大违约，须补回与标准报价的差价给乙方。' },
+                { type: 'h2', content: '九、争议解决方式' },
+                { type: 'paragraph', content: '双方合同履行过程中发生争议，双方应协商解决。如果不能协商解决争议，任何一方均可将此争议向双方所在地人民法院起诉。' },
+                { type: 'h2', content: '十、其他' },
+                { type: 'sub-items', content: '(一) 本合同自双方签署之日起成立并生效，除非甲乙双方达成合意终止，合同自动延续。\n(二) 本合同为双方的最终合同，未经双方书面同意，不得对此作任何修改。如有未尽事宜，可签订书面补充协议。补充协议与本协议具有同等法律效力。\n(三) 甲乙双方均确认本合同内（合同头部或合同内指定的项目经理联络方式）所载地址、微信、电子邮件、电话为其有效的联系方式，若任何一方联系方式发生变更的，需于变更前提前14日书面告知对方，否则对发生变更前地址（包括电子邮件，微信，电话短信等）发送的文件均视为送达。\n(四) 如乙方因经营变动或人员变动等不再具备提供维护服务时，若在服务期内，应保障服务到服务期结束后方能终止服务，并协调甲方与厂家进行服务对接事宜。' },
+                { type: 'h2', content: '十一、本合同一式两份，合同双方各持一份，均具有同等法律效力。' },
+                { type: 'signature', content: '' },
+                { type: 'appendix-a-title', content: '合同附件A 服务协议（Service Level Agreement）服务范围及响应时间' },
+                { type: 'sub-items', content: '1. 乙方的服务范围仅限于乙方所售之软件的各功能模块，如不包括甲方自身软件的API编程，第三方软件的支持、网络、硬件、病毒、网络安全、系统安全等非乙方软件引起的问题。对于非乙方软件引起的问题。乙方可提供相应的技术建议，但不承担责任。\n2. 乙方在工作时间内为甲方按照服务协议约定的方式提供软件所需的售后服务，响应时间请参考服务等级及响应时间部分。\n3. 乙方对软件提供有偿的终身技术支持。对于不在合同规定范围内的服务请求，甲乙双方应重新协商费用。\n4. 因为PDF流程不可避免存在不可预知的缺陷，乙方不对最后生成的PDF文件作无缺陷担保，甲方应对新交付的功能处理的文件在生产前进行充分的测试，应对金额大的文件进行必要的印前检查等，因生产文件造成的任何直接或间接损失，包括但不限于数据丢失、利润损失、丧失商业机会等均不承担赔偿责任。甲方有责任对乙方软件所产生的相关数据进行备份，并维护系统的安全运行。\n5. 对于AI文件，CDR文件，（如标签，不干胶等），通常客户会将不同款数的文件放在一个画版上，如果需要自动化处理，需要将每个款式单独放置在一个画版上，异型、圆形的文件，还需要带上专色刀线。' },
+                { type: 'h3', content: '服务等级及响应时间' },
+                { type: 'paragraph', content: '乙方平时会将遇到的常见问题，写成文档，给予甲方自身的运维人员查看，以便其自行处理在以下列列举的工作时间以外的非工作时间段遇到的问题。如非工作时间的晚上十点前系统发生1、2级故障的，甲方又实在无法自行处理的，可致电乙方，乙方尽可能地给予甲方最大限度的帮助。' },
+                { type: 'sla-level', title: '第1级 - 系统奔溃或不能访问', content: '此等级为出现以下情况：\n• 服务完全启动不了或访问不了系统\n• 顾客无法访问系统\n• 系统冻结或者没有反应\n处理方式：此种情况可以直接电话联系乙方工程师，乙方工程师以电话及远程登录协助甲方排查及排除问题。\n电话沟通时间：工作日 星期一至五 9am – 6pm，北京时间\n工作时间内60分钟响应' },
+                { type: 'sla-level', title: '第2级 - 严重影响业务', content: '此等级为出现以下情况：\n• 软件功能减退\n• 某功能不能正常使用\n• 交货期或产品质量因系统问题受到影响\n• 排版不正确\n处理方式：甲方须通过网上售后系统汇报问题，乙方安排工程师在收到售后请求后跟进，乙方可通过网上售后系统与甲方沟通。\n处理时间：工作日 星期一至五 9am – 6pm，北京时间\n3小时响应时间' },
+                { type: 'sla-level', title: '第3级 - 日常售后工作以及对业务微小影响', content: '此等级为出现以下情况：\n• 业务受到轻微的影响\n• 因为系统的原因导致使用不方便\n• 搭建流程开发问题\n• 操作问题\n• 额外的培训请求\n甲方须通过网上售后系统汇报问题，乙方可不需要立即回答。\n处理时间：工作时间 星期一至五 9am – 6pm，北京时间\n8小时响应时间' },
+                { type: 'appendix-b-title', content: '合同附件B' },
+                { type: 'paragraph', content: '本合同不包括以下软件或虽未列举但类似的其他软件，甲方可以自行购买或咨询乙方' },
+                { type: 'appendix-b-table', content: 'Windows操作系统及服务器|承载乙方所提供的解决方案，须按乙方要求配置。|自行购买\nOffice系列软件|转档Office格式时候用到|自行购买\nAdobe系列软件|转档PDF格式时候用到|自行购买\n印前预检|Pitstop, PDF toolBox|自行购买\n带宽|n/a|自行购买' },
+                { type: 'footer-info', content: 'Deep Mind Solutions 广州多普网络科技有限公司 info@deepmind.cn' }
+            ];
+        }
+
         // 打印合同
         function printContract() {
+            // 临时退出编辑模式后打印
+            const wasEditing = contractEditMode;
+            if (wasEditing) {
+                document.getElementById('contract-content').classList.remove('editing');
+            }
             window.print();
+            if (wasEditing) {
+                document.getElementById('contract-content').classList.add('editing');
+            }
         }
 
         // 下载合同
         function downloadContract() {
-            const content = document.getElementById('contract-content').innerHTML;
+            // 获取内容并清除编辑模式的标记
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = document.getElementById('contract-content').innerHTML;
+            // 移除所有 block-actions 按钮
+            tempDiv.querySelectorAll('.block-actions').forEach(el => el.remove());
+            // 移除 editable-block 包裹，保留内容
+            tempDiv.querySelectorAll('.editable-block').forEach(el => {
+                el.removeAttribute('onclick');
+                el.removeAttribute('class');
+                el.removeAttribute('data-block-idx');
+            });
+            const content = tempDiv.innerHTML;
             const html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
