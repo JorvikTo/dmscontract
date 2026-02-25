@@ -2275,6 +2275,7 @@
                 contractBlocks[idx].title = titleEl.value;
             }
 
+            saveContractBlocks();
             document.querySelector('.contract-edit-dialog').remove();
             // 重新渲染合同
             generateContract();
@@ -2333,6 +2334,7 @@
             }
             const newBlock = { type: type, content: content };
             contractBlocks.splice(position, 0, newBlock);
+            saveContractBlocks();
             document.querySelector('.contract-edit-dialog').remove();
             generateContract();
             if (contractEditMode) {
@@ -2345,8 +2347,9 @@
             if (!contractEditMode) return;
             const block = contractBlocks[idx];
             const preview = block.content.substring(0, 30) + (block.content.length > 30 ? '...' : '');
-            if (confirm(`确定要删除这个内容块吗？\n“${preview}”`)) {
+            if (confirm(`确定要删除这个内容块吗？\n"${preview}"`)) {
                 contractBlocks.splice(idx, 1);
+                saveContractBlocks();
                 generateContract();
                 if (contractEditMode) {
                     document.getElementById('contract-content').classList.add('editing');
