@@ -1330,6 +1330,7 @@
                 localStorage.removeItem('dms_features_' + currentCustomerId);
                 localStorage.removeItem('dms_services_' + currentCustomerId);
                 localStorage.removeItem('dms_contract_' + currentCustomerId);
+                localStorage.removeItem('dms_form_' + currentCustomerId);
                 delete customers[currentCustomerId];
                 currentCustomerId = 'default';
                 saveCustomers();
@@ -1361,6 +1362,8 @@
             if (contractBlocks && contractBlocks.length > 0) {
                 saveContractBlocks();
             }
+            // 保存合同表单数据
+            saveContractFormData();
             // 保存标题
             customers[currentCustomerId].title = document.getElementById('mainTitle').textContent;
             customers[currentCustomerId].subtitle = document.getElementById('mainSubtitle').textContent;
@@ -1387,6 +1390,8 @@
             }
             renderPlanTable();
             renderServiceTable();
+            // 加载合同表单数据
+            loadContractFormData();
         }
 
         // 更新标题显示
@@ -1409,7 +1414,26 @@
         function init() {
             loadCustomers();
             loadCustomerData();
+            loadContractFormData();
             updateTitleDisplay();
+            // 为合同表单输入框添加自动保存
+            setupFormAutoSave();
+        }
+
+        // 为合同表单输入框添加自动保存（失去焦点时保存）
+        function setupFormAutoSave() {
+            const formInputIds = [
+                'party-a-name', 'party-a-address', 'party-a-pm', 'party-a-phone',
+                'party-b-name', 'party-b-address', 'party-b-pm', 'party-b-phone', 'party-b-wechat',
+                'contract-no', 'original-price', 'discount-price', 'annual-fee'
+            ];
+            formInputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('blur', saveContractFormData);
+                    el.addEventListener('change', saveContractFormData);
+                }
+            });
         }
 
         // 加载数据
@@ -1428,6 +1452,64 @@
             localStorage.setItem('dms_plans', JSON.stringify(plans));
             localStorage.setItem('dms_features', JSON.stringify(features));
             localStorage.setItem('dms_services', JSON.stringify(services));
+            // 同时保存合同表单数据
+            saveContractFormData();
+        }
+
+        // 保存合同表单数据（按客户）
+        function saveContractFormData() {
+            const formData = {
+                partyAName: document.getElementById('party-a-name').value,
+                partyAAddress: document.getElementById('party-a-address').value,
+                partyAPm: document.getElementById('party-a-pm').value,
+                partyAPhone: document.getElementById('party-a-phone').value,
+                partyBName: document.getElementById('party-b-name').value,
+                partyBAddress: document.getElementById('party-b-address').value,
+                partyBPm: document.getElementById('party-b-pm').value,
+                partyBPhone: document.getElementById('party-b-phone').value,
+                partyBWechat: document.getElementById('party-b-wechat').value,
+                contractNo: document.getElementById('contract-no').value,
+                originalPrice: document.getElementById('original-price').value,
+                discountPrice: document.getElementById('discount-price').value,
+                annualFee: document.getElementById('annual-fee').value
+            };
+            localStorage.setItem('dms_form_' + currentCustomerId, JSON.stringify(formData));
+        }
+
+        // 加载合同表单数据（按客户）
+        function loadContractFormData() {
+            const saved = localStorage.getItem('dms_form_' + currentCustomerId);
+            if (saved) {
+                const formData = JSON.parse(saved);
+                document.getElementById('party-a-name').value = formData.partyAName || '';
+                document.getElementById('party-a-address').value = formData.partyAAddress || '';
+                document.getElementById('party-a-pm').value = formData.partyAPm || '';
+                document.getElementById('party-a-phone').value = formData.partyAPhone || '';
+                document.getElementById('party-b-name').value = formData.partyBName || '广州多普网络科技有限公司';
+                document.getElementById('party-b-address').value = formData.partyBAddress || '佛山市南海区三山新城国际创智园13B906';
+                document.getElementById('party-b-pm').value = formData.partyBPm || '杜俊荣';
+                document.getElementById('party-b-phone').value = formData.partyBPhone || '18688891984';
+                document.getElementById('party-b-wechat').value = formData.partyBWechat || 'Jorvikdu';
+                document.getElementById('contract-no').value = formData.contractNo || '';
+                document.getElementById('original-price').value = formData.originalPrice || '';
+                document.getElementById('discount-price').value = formData.discountPrice || '';
+                document.getElementById('annual-fee').value = formData.annualFee || '58000';
+            } else {
+                // 没有保存过，清空甲方信息，保留乙方默认值
+                document.getElementById('party-a-name').value = '';
+                document.getElementById('party-a-address').value = '';
+                document.getElementById('party-a-pm').value = '';
+                document.getElementById('party-a-phone').value = '';
+                document.getElementById('party-b-name').value = '广州多普网络科技有限公司';
+                document.getElementById('party-b-address').value = '佛山市南海区三山新城国际创智园13B906';
+                document.getElementById('party-b-pm').value = '杜俊荣';
+                document.getElementById('party-b-phone').value = '18688891984';
+                document.getElementById('party-b-wechat').value = 'Jorvikdu';
+                document.getElementById('contract-no').value = '';
+                document.getElementById('original-price').value = '';
+                document.getElementById('discount-price').value = '';
+                document.getElementById('annual-fee').value = '58000';
+            }
         }
 
         // 渲染方案表格
@@ -2332,12 +2414,14 @@
                 localStorage.removeItem('dms_features_' + currentCustomerId);
                 localStorage.removeItem('dms_services_' + currentCustomerId);
                 localStorage.removeItem('dms_contract_' + currentCustomerId);
+                localStorage.removeItem('dms_form_' + currentCustomerId);
                 plans = JSON.parse(JSON.stringify(getDefaultPlans()));
                 features = JSON.parse(JSON.stringify(getDefaultFeatures()));
                 services = JSON.parse(JSON.stringify(getDefaultServices()));
                 contractBlocks = JSON.parse(JSON.stringify(getDefaultContractBlocks()));
                 renderPlanTable();
                 renderServiceTable();
+                loadContractFormData();
             }
         }
 
