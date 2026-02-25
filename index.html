@@ -308,19 +308,15 @@
         }
         .service-table th:nth-child(1),
         .service-table td:nth-child(1) {
-            width: 12%;
+            width: 15%;
         }
         .service-table th:nth-child(2),
         .service-table td:nth-child(2) {
-            width: 58%;
+            width: 55%;
         }
         .service-table th:nth-child(3),
         .service-table td:nth-child(3) {
-            width: 15%;
-        }
-        .service-table th:nth-child(4),
-        .service-table td:nth-child(4) {
-            width: 15%;
+            width: 30%;
         }
         .service-table td {
             text-align: left;
@@ -341,22 +337,26 @@
             opacity: 1;
         }
         .service-row-actions {
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
-            gap: 4px;
-            justify-content: center;
+            gap: 3px;
             opacity: 0;
             transition: opacity 0.2s;
+            z-index: 10;
         }
         .service-action-btn {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
             color: white;
             padding: 0;
-            line-height: 24px;
+            line-height: 20px;
             text-align: center;
         }
         .service-action-btn.add-above {
@@ -839,10 +839,6 @@
             .header, .tabs, .btn-group, .instructions, .contract-edit-toolbar, .block-actions, .service-row-actions, .row-actions {
                 display: none !important;
             }
-            .service-table th:nth-child(4),
-            .service-table td:nth-child(4) {
-                display: none !important;
-            }
             .panel {
                 box-shadow: none;
             }
@@ -925,7 +921,6 @@
                             <th>服务级别</th>
                             <th>服务内容</th>
                             <th>价格</th>
-                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="service-body">
@@ -1516,16 +1511,16 @@
             services.forEach((service, index) => {
                 tbody.innerHTML += `
                     <tr class="service-row">
-                        <td class="editable-cell" onclick="editServiceCell(${index}, 'level')">${service.level}</td>
-                        <td class="editable-cell" onclick="editServiceCell(${index}, 'content')" style="white-space: pre-line;">${service.content}</td>
-                        <td class="editable-cell" onclick="editServiceCell(${index}, 'price')">${service.price}</td>
-                        <td>
+                        <td class="editable-cell" onclick="editServiceCell(${index}, 'level')">
                             <div class="service-row-actions">
                                 <button class="service-action-btn add-above" title="在上方添加" onclick="event.stopPropagation();addServiceAt(${index})">↑</button>
                                 <button class="service-action-btn add-below" title="在下方添加" onclick="event.stopPropagation();addServiceAt(${index + 1})">↓</button>
                                 <button class="service-action-btn del-row" title="删除" onclick="event.stopPropagation();deleteService(${index})">×</button>
                             </div>
+                            ${service.level}
                         </td>
+                        <td class="editable-cell" onclick="editServiceCell(${index}, 'content')" style="white-space: pre-line;">${service.content}</td>
+                        <td class="editable-cell" onclick="editServiceCell(${index}, 'price')">${service.price}</td>
                     </tr>
                 `;
             });
