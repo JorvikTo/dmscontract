@@ -302,30 +302,71 @@
             color: #27ae60;
             margin-bottom: 15px;
         }
+        .service-table table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .service-table th:nth-child(1),
+        .service-table td:nth-child(1) {
+            width: 12%;
+        }
+        .service-table th:nth-child(2),
+        .service-table td:nth-child(2) {
+            width: 58%;
+        }
+        .service-table th:nth-child(3),
+        .service-table td:nth-child(3) {
+            width: 15%;
+        }
+        .service-table th:nth-child(4),
+        .service-table td:nth-child(4) {
+            width: 15%;
+        }
         .service-table td {
             text-align: left;
             vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
-        .service-table td:last-child {
+        .service-table td:nth-child(3) {
             text-align: right;
-            white-space: nowrap;
+            font-weight: bold;
+            color: #d35400;
         }
         .service-row {
             position: relative;
         }
-        .service-row:hover .delete-service {
-            display: inline-block;
+        .service-row:hover .service-row-actions {
+            opacity: 1;
         }
-        .delete-service {
-            display: none;
-            background: #e74c3c;
-            color: white;
+        .service-row-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .service-action-btn {
+            width: 24px;
+            height: 24px;
             border: none;
-            padding: 2px 8px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
-            margin-left: 10px;
+            color: white;
+            padding: 0;
+            line-height: 24px;
+            text-align: center;
+        }
+        .service-action-btn.add-above {
+            background: #3498db;
+        }
+        .service-action-btn.add-below {
+            background: #27ae60;
+        }
+        .service-action-btn.del-row {
+            background: #e74c3c;
         }
         .editable-cell {
             cursor: text;
@@ -795,7 +836,11 @@
             body {
                 background: white;
             }
-            .header, .tabs, .btn-group, .instructions, .contract-edit-toolbar, .block-actions {
+            .header, .tabs, .btn-group, .instructions, .contract-edit-toolbar, .block-actions, .service-row-actions, .row-actions {
+                display: none !important;
+            }
+            .service-table th:nth-child(4),
+            .service-table td:nth-child(4) {
                 display: none !important;
             }
             .panel {
@@ -877,9 +922,10 @@
                 <table id="service-table">
                     <thead>
                         <tr>
-                            <th style="width: 150px;">服务级别</th>
+                            <th>服务级别</th>
                             <th>服务内容</th>
-                            <th style="width: 150px;">价格</th>
+                            <th>价格</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="service-body">
@@ -1472,7 +1518,14 @@
                     <tr class="service-row">
                         <td class="editable-cell" onclick="editServiceCell(${index}, 'level')">${service.level}</td>
                         <td class="editable-cell" onclick="editServiceCell(${index}, 'content')" style="white-space: pre-line;">${service.content}</td>
-                        <td class="editable-cell" onclick="editServiceCell(${index}, 'price')">${service.price}<button class="delete-service" onclick="deleteService(${index})">删除</button></td>
+                        <td class="editable-cell" onclick="editServiceCell(${index}, 'price')">${service.price}</td>
+                        <td>
+                            <div class="service-row-actions">
+                                <button class="service-action-btn add-above" title="在上方添加" onclick="event.stopPropagation();addServiceAt(${index})">↑</button>
+                                <button class="service-action-btn add-below" title="在下方添加" onclick="event.stopPropagation();addServiceAt(${index + 1})">↓</button>
+                                <button class="service-action-btn del-row" title="删除" onclick="event.stopPropagation();deleteService(${index})">×</button>
+                            </div>
+                        </td>
                     </tr>
                 `;
             });
@@ -1762,6 +1815,18 @@
             renderServiceTable();
         }
 
+        // 在指定位置添加服务级别
+        function addServiceAt(position) {
+            const newService = {
+                level: '新级别',
+                content: '请输入服务内容',
+                price: '待定'
+            };
+            services.splice(position, 0, newService);
+            saveData();
+            renderServiceTable();
+        }
+
         // 删除服务级别
         function deleteService(index) {
             if (confirm('确定删除此服务级别吗？')) {
@@ -1864,9 +1929,9 @@
             featureTableHTML += '</tbody></table>';
 
             // 生成服务级别表格
-            let serviceTableHTML = '<table style="width:100%; margin: 20px 0;"><thead><tr><th>服务级别</th><th>服务内容</th><th>价格</th></tr></thead><tbody>';
+            let serviceTableHTML = '<table style="width:100%; margin: 20px 0; table-layout: fixed;"><thead><tr><th style="width:12%">服务级别</th><th style="width:58%">服务内容</th><th style="width:30%">价格</th></tr></thead><tbody>';
             services.forEach(service => {
-                serviceTableHTML += `<tr><td style="vertical-align:top;">${service.level}</td><td style="white-space:pre-line; text-align:left;">${service.content}</td><td style="text-align:right;">${service.price}</td></tr>`;
+                serviceTableHTML += `<tr><td style="vertical-align:top; word-wrap:break-word;">${service.level}</td><td style="white-space:pre-line; text-align:left; word-wrap:break-word;">${service.content}</td><td style="text-align:right; word-wrap:break-word;">${service.price}</td></tr>`;
             });
             serviceTableHTML += '</tbody></table>';
 
@@ -2421,9 +2486,11 @@
         .price-row td { background: #fff8e6; color: #d35400; font-weight: bold; font-size: 12px; }
         .check { color: #27ae60; font-size: 14px; }
         .cross { color: #e74c3c; font-size: 14px; }
-        .service-table td { text-align: left; vertical-align: top; font-size: 11px; }
-        .service-table td:last-child { text-align: right; white-space: nowrap; font-weight: bold; color: #d35400; }
-        .service-table td:first-child { font-weight: bold; color: #27ae60; width: 100px; }
+        .service-table { table-layout: fixed; width: 100%; }
+        .service-table td { text-align: left; vertical-align: top; font-size: 11px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; }
+        .service-table th:nth-child(1), .service-table td:nth-child(1) { width: 12%; font-weight: bold; color: #27ae60; }
+        .service-table th:nth-child(2), .service-table td:nth-child(2) { width: 58%; }
+        .service-table th:nth-child(3), .service-table td:nth-child(3) { width: 30%; text-align: right; font-weight: bold; color: #d35400; }
         .footer { text-align: center; padding: 10px; color: #666; font-size: 10px; }
         .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center; }
         .btn { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; }
