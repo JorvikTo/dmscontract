@@ -847,15 +847,24 @@
             body {
                 background: white;
             }
-            .header, .tabs, .btn-group, .instructions, .contract-edit-toolbar, .block-actions, .service-row-actions, .row-actions {
+            .header, .customer-bar, .tabs, .btn-group, .instructions, .contract-edit-toolbar, .block-actions, .service-row-actions, .row-actions {
                 display: none !important;
+            }
+            .container {
+                max-width: none;
+                padding: 0;
             }
             .panel {
                 box-shadow: none;
+                padding: 0;
+                border-radius: 0;
+                background: transparent;
             }
             .contract-preview {
                 border: none;
-                padding: 20px;
+                max-width: none;
+                margin: 0;
+                padding: 24px 0 0;
             }
             .contract-preview.editing .editable-block {
                 border: none;
