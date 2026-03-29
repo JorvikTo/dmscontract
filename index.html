@@ -2012,14 +2012,21 @@
             };
 
             // 生成功能清单表格
-            let featureTableHTML = '<table style="width:100%; margin: 20px 0;"><thead><tr><th style="text-align:left;">功能</th><th style="width:80px;">包含</th></tr></thead><tbody>';
+            let featureTableHTML = '<table style="width:100%; margin: 20px 0;"><thead><tr><th style="text-align:left;">功能</th><th style="width:120px;">包含/说明</th></tr></thead><tbody>';
             features.forEach(category => {
                 if (category.category) {
                     featureTableHTML += `<tr class="category-row"><td colspan="2" style="background:#e8ecf4; font-weight:bold;">${category.category}</td></tr>`;
                 }
                 category.features.forEach(feature => {
                     const value = feature.values[selectedPlanIndex] || '';
-                    const display = value === '✔' ? '<span style="color:#27ae60;">✔</span>' : (value === '✘' ? '<span style="color:#e74c3c;">✘</span>' : '-');
+                    let display = '-';
+                    if (value === '✔') {
+                        display = '<span style="color:#27ae60;">✔</span>';
+                    } else if (value === '✘') {
+                        display = '<span style="color:#e74c3c;">✘</span>';
+                    } else if (value && value.trim() !== '') {
+                        display = `<span style="color:#d35400; font-weight:bold; white-space:pre-line;">${value}</span>`;
+                    }
                     featureTableHTML += `<tr><td style="text-align:left;">${feature.name}</td><td style="text-align:center;">${display}</td></tr>`;
                 });
             });
